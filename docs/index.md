@@ -10,13 +10,9 @@
 
 Use your organization's custom Slack emojis (or other providers) directly in MkDocs documentation with the familiar `:emoji-name:` syntax.
 
-```markdown
-# Welcome to our docs! :slack-wave:
+Check out our party parrot: :partyparrot:
 
-Check out our party parrot: :slack-partyparrot:
-
-We love cats too: :slack-catjam: :slack-catdance:
-```
+We love cats too: :catjam: :cat-dance:
 
 ## Key Features
 
