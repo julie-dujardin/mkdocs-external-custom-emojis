@@ -78,7 +78,7 @@ class TestEmojiRendering:
         """Verify emoji images are rendered in the test page."""
         img_tags = test_page_html.find_all("img")
         emoji_images = [
-            img for img in img_tags if img.get("class") and "emojione" in img.get("class", [])
+            img for img in img_tags if img.get("class") and "twemoji" in img.get("class", [])
         ]
 
         # Should have 8 emoji images (4 emojis x 2 syntax variants each)
@@ -102,8 +102,10 @@ class TestEmojiRendering:
         for img in slack_emojis:
             src = img.get("src", "")
             assert src, f"Emoji image missing src: {img}"
-            # Slack emojis should have URLs (either external or cached)
-            assert src.startswith(("http", "assets/", "/assets/")), f"Unexpected src format: {src}"
+            # Slack emojis should have URLs (either external or cached, possibly with base URL prefix)
+            assert "assets/emojis/" in src or src.startswith("http"), (
+                f"Unexpected src format: {src}"
+            )
 
     def test_discord_emojis_have_valid_src(self, test_page_html):
         """Verify Discord emojis have valid image sources."""
@@ -121,18 +123,21 @@ class TestEmojiRendering:
         for img in discord_emojis:
             src = img.get("src", "")
             assert src, f"Emoji image missing src: {img}"
-            assert src.startswith(("http", "assets/", "/assets/")), f"Unexpected src format: {src}"
+            # Discord emojis should have URLs (either external or cached, possibly with base URL prefix)
+            assert "assets/emojis/" in src or src.startswith("http"), (
+                f"Unexpected src format: {src}"
+            )
 
     def test_emoji_alt_text(self, test_page_html):
-        """Verify emoji images have appropriate alt text."""
+        """Verify emoji images have appropriate title text."""
         img_tags = test_page_html.find_all("img")
         emoji_images = [
-            img for img in img_tags if img.get("class") and "emojione" in img.get("class", [])
+            img for img in img_tags if img.get("class") and "twemoji" in img.get("class", [])
         ]
 
         for img in emoji_images:
-            alt = img.get("alt", "")
-            # Alt text should contain the emoji name in :name: format
-            assert alt.startswith(":") and alt.endswith(":"), (
-                f"Emoji alt text should be in :name: format, got: {alt}"
+            title = img.get("title", "")
+            # Title should contain the emoji name in :name: format
+            assert title.startswith(":") and title.endswith(":"), (
+                f"Emoji title should be in :name: format, got: {title}"
             )
