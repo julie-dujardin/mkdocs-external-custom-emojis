@@ -1,10 +1,10 @@
-# Installation
+# Installation :partyparrot:
 
-## Requirements
+## Install with uv (Recommended) :stonks:
 
-- Python 3.11 or higher
-- MkDocs 1.4.0 or higher
-- MkDocs Material 9.4.0 or higher
+```bash
+uv add mkdocs-external-custom-emojis
+```
 
 ## Install with pip
 
@@ -12,15 +12,15 @@
 pip install mkdocs-external-custom-emojis
 ```
 
-## Install with uv (Recommended)
+## Requirements
 
-```bash
-uv add mkdocs-external-custom-emojis
-```
+- Python 3.11+
+- MkDocs 1.4+
+- MkDocs Material 9.4+
 
-## Install from Source
+## Install from Source :bob_the_builder:
 
-For development or to use the latest features:
+For development or bleeding-edge features:
 
 ```bash
 git clone https://github.com/julie-dujardin/mkdocs-external-custom-emojis.git
@@ -28,21 +28,21 @@ cd mkdocs-external-custom-emojis
 uv sync --dev
 ```
 
-## Verify Installation
-
-Check that the plugin is installed correctly:
+## Verify Installation :lgtm:
 
 ```bash
 mkdocs-emoji --version
 ```
 
-You should see output like:
+You should see:
 
 ```
 mkdocs-emoji, version 0.1.0
 ```
 
+You're all set! :confettis:
+
 ## Next Steps
 
-- [Quick Start Guide](quickstart.md) - Get up and running in 5 minutes
-- [Configuration](configuration.md) - Learn about configuration options
+- [Quick Start Guide](quickstart.md) - Get up and running in 5 minutes :fastparrot:
+- [Configuration](configuration.md) - Learn about configuration options :claudethinking:

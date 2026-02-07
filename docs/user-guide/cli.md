@@ -1,6 +1,16 @@
-# CLI Commands
+# CLI Commands :hackerman:
 
-The `mkdocs-emoji` CLI provides commands for managing custom emojis.
+The `mkdocs-emoji` CLI manages your custom emojis.
+
+## Quick Reference :typingcat:
+
+| Command | Description |
+|---------|-------------|
+| `mkdocs-emoji init` | Create config file |
+| `mkdocs-emoji sync` | Download emojis |
+| `mkdocs-emoji list` | List available emojis |
+| `mkdocs-emoji validate` | Check configuration |
+| `mkdocs-emoji cache` | Show cache info |
 
 ## Commands
 
@@ -13,9 +23,9 @@ mkdocs-emoji init                    # Creates emoji-config.toml
 mkdocs-emoji init custom-config.toml # Custom path
 ```
 
-### sync
+### sync :partyparrot:
 
-Sync emojis from configured providers.
+Download emojis from configured providers.
 
 ```bash
 mkdocs-emoji sync                  # Sync all providers
@@ -31,9 +41,9 @@ mkdocs-emoji sync --dry-run        # Preview without syncing
 | `--force` | `-f` | Force re-download even if cached |
 | `--dry-run` | | Show what would be synced |
 
-### list
+### list :catjam:
 
-List available emojis.
+List and search available emojis.
 
 ```bash
 mkdocs-emoji list                  # List all emojis
@@ -49,7 +59,7 @@ mkdocs-emoji list --provider slack # Filter by provider
 | `--search` | `-s` | Search emoji names |
 | `--format` | `-f` | Output format: `text` or `json` |
 
-### validate
+### validate :thonk:
 
 Validate configuration and test connections.
 
@@ -65,7 +75,7 @@ mkdocs-emoji validate --test-providers  # Test provider connections
 | `--check-env` | | Verify required env vars are set |
 | `--test-providers` | | Test API connections |
 
-### cache
+### cache :rubberduck:
 
 Show cache information.
 
@@ -78,3 +88,28 @@ mkdocs-emoji cache --provider slack # Specific provider
 |--------|-------|-------------|
 | `--config` | `-c` | Config file path |
 | `--provider` | `-p` | Show info for specific provider |
+
+## Common Workflows :stonks:
+
+### First-time setup
+
+```bash
+mkdocs-emoji init
+# Edit emoji-config.toml with your provider
+mkdocs-emoji validate --check-env --test-providers
+mkdocs-emoji sync
+```
+
+### Debug missing emojis
+
+```bash
+mkdocs-emoji list --search partyparrot
+mkdocs-emoji cache
+mkdocs-emoji sync --force
+```
+
+### Update emojis
+
+```bash
+mkdocs-emoji sync --force  # Re-download all
+```

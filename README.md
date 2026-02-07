@@ -1,189 +1,105 @@
-# MkDocs External Custom Emojis
+# External Emojis for MkDocs
 
-> Sync custom emojis from external providers (Slack, Discord, etc.) into MkDocs Material
+> Sync custom emojis from Slack, Discord, and more into MkDocs Material
 
 [![CI](https://github.com/julie-dujardin/mkdocs-external-custom-emojis/workflows/CI/badge.svg)](https://github.com/julie-dujardin/mkdocs-external-custom-emojis/actions)
 [![Python Version](https://img.shields.io/pypi/pyversions/mkdocs-external-custom-emojis.svg)](https://pypi.org/project/mkdocs-external-custom-emojis/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Use your organization's custom Slack or Discord emojis directly in MkDocs documentation with the familiar `:emoji-name:` syntax.
+Use your organization's custom emojis directly in MkDocs with the familiar `:emoji-name:` syntax.
 
 ## Features
 
-- 🎯 **Automatic Sync** - Emojis sync automatically during MkDocs build
-- 🔒 **Secure** - Tokens stored in environment variables, never in config files
-- 💾 **Smart Caching** - TTL-based caching to minimize API calls
-- 🔧 **Extensible** - Easy to add new providers (Teams, etc.)
-- 🎨 **Multiple Providers** - Support multiple Slack or Discord workspaces
-- 🔍 **Filtering** - Include/exclude emoji patterns
-- 📦 **CLI Tools** - Manage emojis with built-in CLI commands
+- 🔄 **Automatic Sync** - Emojis sync during MkDocs build
+- 🔌 **Multiple Providers** - Slack, Discord, multiple workspaces
+- 🔧 **Extensible** - Easy to add new providers
+- 💾 **Smart Caching** - TTL-based caching minimizes API calls
+- 🎯 **Filtering** - Include/exclude emoji patterns
+- 🖥️ **CLI Tools** - Manage emojis from the command line
+- ♿ **Accessible** - Screen reader friendly with proper alt text
 
 ## Quick Start
 
-### Installation
+### 1. Install
 
 ```bash
-pip install mkdocs-external-custom-emojis
+uv add mkdocs-external-custom-emojis
+# or: pip install mkdocs-external-custom-emojis
 ```
 
-### Configuration
+### 2. Configure
 
-1. Create `emoji-config.toml` in your project root:
+Create `emoji-config.toml`:
 
 ```toml
-# For Slack
 [[providers]]
 type = "slack"
 namespace = "slack"
 token_env = "SLACK_TOKEN"
 
-# For Discord
 [[providers]]
 type = "discord"
 namespace = "discord"
 token_env = "DISCORD_BOT_TOKEN"
 tenant_id = "DISCORD_GUILD_ID"
+
+[[providers]]
+type = "discord"
+namespace = "secret_discord"
+token_env = "SECOND_DISCORD_BOT_TOKEN"
+tenant_id = "SECOND_DISCORD_GUILD_ID"
 ```
 
-2. Set your provider tokens:
+Set your token:
 
 ```bash
-# Slack
 export SLACK_TOKEN="xoxp-your-token-here"
-
-# Discord
-export DISCORD_BOT_TOKEN="your-bot-token-here"
+export DISCORD_BOT_TOKEN="MTIz..."
 export DISCORD_GUILD_ID="123456789012345678"
+export SECOND_DISCORD_BOT_TOKEN="MTIz..."
+export SECOND_DISCORD_GUILD_ID="987654321012345678"
 ```
 
-> Get a Slack token: https://docs.slack.dev/app-management/quickstart-app-settings (requires `emoji:read` scope)
-> Get a Discord token: https://discord.com/developers/applications (requires bot with server access)
-
-3. Add the plugin to `mkdocs.yml`:
+Add to `mkdocs.yml`:
 
 ```yaml
 plugins:
   - external-emojis
 
 markdown_extensions:
-  - pymdownx.emoji  # The plugin auto-configures this
+  - pymdownx.emoji
 ```
 
-### Usage
-
-Use emojis in your markdown:
+### 3. Use
 
 ```markdown
-# Welcome to our docs! :slack-wave:
+# Welcome! :partyparrot:
 
-Check out our party parrot: :slack-partyparrot:
-
-We love cats: :slack-catjam: :slack-catdance:
+We love cats: :catjam: :shipit:
 ```
-
-Build your docs:
 
 ```bash
 mkdocs build  # Emojis sync automatically!
 ```
 
-## Configuration
-
-### Full Configuration Example
-
-```toml
-# Cache configuration
-[cache]
-directory = ".mkdocs_emoji_cache"
-ttl_hours = 24
-clean_on_build = false
-
-# Global emoji options
-[emojis]
-namespace_prefix_required = false
-max_size_kb = 500
-
-# Slack provider
-[[providers]]
-type = "slack"
-namespace = "slack"
-token_env = "SLACK_TOKEN"
-enabled = true
-
-# Discord provider
-[[providers]]
-type = "discord"
-namespace = "discord"
-token_env = "DISCORD_BOT_TOKEN"
-tenant_id = "DISCORD_GUILD_ID"
-enabled = true
-
-# Optional: Filter emojis
-[providers.filters]
-include_patterns = ["party*", "cat*"]
-exclude_patterns = ["*-old"]
-
-# Multiple workspaces
-[[providers]]
-type = "slack"
-namespace = "work"
-token_env = "WORK_SLACK_TOKEN"
-```
-
-### Plugin Options
-
-Configure in `mkdocs.yml`:
-
-```yaml
-plugins:
-  - external-emojis:
-      config_file: emoji-config.toml  # default
-      icons_dir: overrides/assets/emojis     # default
-      enabled: true                   # default
-      fail_on_error: true             # default
-```
-
-## CLI Commands
-
-The plugin includes a CLI for managing emojis outside of the build process:
+## CLI
 
 ```bash
-mkdocs-emoji init      # Initialize configuration
-mkdocs-emoji sync      # Sync emojis from providers
+mkdocs-emoji init      # Create config
+mkdocs-emoji sync      # Download emojis
 mkdocs-emoji list      # List available emojis
-mkdocs-emoji validate  # Validate configuration
-mkdocs-emoji cache     # Show cache info
+mkdocs-emoji validate  # Check configuration
 ```
 
-See the [CLI documentation](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/user-guide/cli/) for all options.
+## Documentation
 
-## How It Works
+📚 **[Full Documentation](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/)**
 
-1. **Build Start** - MkDocs plugin activates
-2. **Fetch Emoji List** - Provider API called (cached if fresh)
-3. **Download Emojis** - Missing/stale emojis downloaded
-4. **Sync to Icons Dir** - Emojis placed in `overrides/assets/emojis/<namespace>/`
-5. **MkDocs Renders** - Material theme finds custom icons automatically
+- [Quick Start Guide](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/quickstart/)
+- [Configuration](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/configuration/)
+- [CLI Commands](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/user-guide/cli/)
+- [Deployment](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/deployment/)
 
-## CI/CD Integration
+## License
 
-Add your provider tokens as GitHub secrets (e.g., `SLACK_TOKEN`, `DISCORD_BOT_TOKEN`), then use them in your workflow:
-
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    env:
-      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-      DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: pip install mkdocs-material mkdocs-external-custom-emojis
-      - run: mkdocs build
-```
-
-See the [Deployment Guide](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/deployment/) for complete GitHub Pages setup instructions.
+MIT License - see [LICENSE](LICENSE) for details.

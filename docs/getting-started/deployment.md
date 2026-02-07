@@ -1,37 +1,35 @@
-# Deployment
+# Deployment :shipit: :rocket_animated:
 
-This guide explains how to deploy your MkDocs documentation with external custom emojis using GitHub Actions and GitHub Pages.
+Deploy your MkDocs site with custom emojis using GitHub Actions.
 
 ## Prerequisites
 
-Before setting up deployment, ensure you have:
-
-1. A working MkDocs configuration with the `external-emojis` plugin
-2. An `emoji-config.toml` file configured with your providers
-3. A Slack token (or other provider tokens) ready to add as a secret
+- Working MkDocs config with `external-emojis` plugin
+- `emoji-config.toml` configured with your providers
+- Provider tokens ready to add as secrets
 
 ## GitHub Actions Setup
 
-### Step 1: Add Your Token as a Secret
+### Step 1: Add Secrets
 
-1. Go to your GitHub repository
-2. Navigate to **Settings** > **Secrets and variables** > **Actions**
-3. Click **New repository secret**
-4. Add your token:
-    - **Name**: `SLACK_TOKEN`
-    - **Value**: Your Slack token (e.g., `xoxp-...`)
+1. Go to your repository → **Settings** → **Secrets and variables** → **Actions**
+2. Click **New repository secret**
+3. Add your tokens:
 
-!!! tip "Getting a Slack Token"
-    See the [Slack documentation](https://docs.slack.dev/app-management/quickstart-app-settings) to create an app with the `emoji:read` scope.
+| Name | Value |
+|------|-------|
+| `SLACK_TOKEN` | `xoxp-...` |
+| `DISCORD_BOT_TOKEN` | `MTIz...` |
+| `DISCORD_GUILD_ID` | `123456789...` |
 
 ### Step 2: Enable GitHub Pages
 
-1. Go to **Settings** > **Pages**
-2. Under **Build and deployment**, select **GitHub Actions** as the source
+1. Go to **Settings** → **Pages**
+2. Set source to **GitHub Actions**
 
-### Step 3: Create the Workflow
+### Step 3: Create Workflow
 
-Create `.github/workflows/docs.yml` in your repository:
+Create `.github/workflows/docs.yml`:
 
 ```yaml
 name: Deploy Docs
@@ -86,39 +84,41 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-## How It Works
+## How It Works :catjam:
 
-1. **Trigger**: The workflow runs on every push to `main` or manually via `workflow_dispatch`
-2. **Build Job**:
-    - Checks out your repository
-    - Sets up Python and installs dependencies
-    - The `SLACK_TOKEN` environment variable is pulled from GitHub secrets
-    - MkDocs builds your site, and the plugin automatically syncs emojis
-3. **Deploy Job**: Uploads the built site to GitHub Pages
+1. **Trigger** - Runs on push to `main` or manual dispatch
+2. **Build** - Installs deps, syncs emojis, builds site
+3. **Deploy** - Uploads to GitHub Pages
 
-## Multiple Providers
+## Multiple Providers :mind_blown:
 
-If you have multiple providers configured, add each token as a separate secret:
+Add each token as a separate secret:
 
 ```yaml
 env:
   SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-  WORK_SLACK_TOKEN: ${{ secrets.WORK_SLACK_TOKEN }}
+  DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+  DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
 ```
 
-## Troubleshooting
+## Troubleshooting :goose_warning:
 
-### Build Fails with Token Error
+### Build Fails with Token Error :facepalm2:
 
-- Verify the secret name matches `token_env` in your `emoji-config.toml`
-- Check that the secret is added at the repository level, not environment level
+- Secret name must match `token_env` in `emoji-config.toml`
+- Add secrets at repository level, not environment level
 
-### Emojis Not Appearing
+### Emojis Not Appearing :confused_dog:
 
-- Ensure `fail_on_error: false` in `mkdocs.yml` if you want builds to succeed even when emoji sync fails
-- Check the build logs for any provider connection errors
+- Set `fail_on_error: false` in `mkdocs.yml` to allow builds even if sync fails
+- Check build logs for provider connection errors
 
 ### Permission Denied
 
-- Verify the workflow has the correct `permissions` block
-- Ensure GitHub Pages is set to deploy from GitHub Actions
+- Verify the `permissions` block in workflow
+- Ensure Pages source is set to GitHub Actions
+
+## Next Steps
+
+- [Configuration](configuration.md) - Advanced options :claudethinking:
+- [CLI Commands](../user-guide/cli.md) - Debug locally :hackerman:
