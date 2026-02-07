@@ -5,7 +5,7 @@ import sys
 
 import click
 
-from mkdocs_external_emojis import __version__
+from mkdocs_external_emojis import DEFAULT_CONFIG_FILE, __version__
 from mkdocs_external_emojis.config import (
     ConfigError,
     create_default_config,
@@ -27,7 +27,7 @@ def main() -> None:
 @click.option(
     "--config",
     "-c",
-    default="emoji-config.toml",
+    default=DEFAULT_CONFIG_FILE,
     help="Path to emoji configuration file",
 )
 @click.option(
@@ -130,7 +130,7 @@ def sync(config: str, provider: str | None, force: bool, dry_run: bool) -> None:
 @click.option(
     "--config",
     "-c",
-    default="emoji-config.toml",
+    default=DEFAULT_CONFIG_FILE,
     help="Path to emoji configuration file",
 )
 @click.option(
@@ -216,7 +216,7 @@ def list(config: str, provider: str | None, search: str | None, format: str) -> 
 @click.option(
     "--config",
     "-c",
-    default="emoji-config.toml",
+    default=DEFAULT_CONFIG_FILE,
     help="Path to emoji configuration file",
 )
 @click.option(
@@ -278,7 +278,7 @@ def validate(config: str, check_env: bool, test_providers: bool) -> None:
 @click.option(
     "--config",
     "-c",
-    default="emoji-config.toml",
+    default=DEFAULT_CONFIG_FILE,
     help="Path to emoji configuration file",
 )
 @click.option(
@@ -309,7 +309,7 @@ def cache(config: str, provider: str | None) -> None:
 
 
 @main.command()
-@click.argument("path", default="emoji-config.toml")
+@click.argument("path", default=DEFAULT_CONFIG_FILE)
 def init(path: str) -> None:
     """Create a default configuration file."""
     try:

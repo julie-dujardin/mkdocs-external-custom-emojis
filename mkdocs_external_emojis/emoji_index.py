@@ -3,12 +3,17 @@
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from xml.etree.ElementTree import Element
 
 from material.extensions.emoji import to_svg, twemoji
 
-logger = logging.getLogger("mkdocs.plugins.external-emojis")
+from mkdocs_external_emojis.constants import LOGGER_NAME
+
+if TYPE_CHECKING:
+    from markdown import Markdown
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 @dataclass
@@ -28,7 +33,9 @@ class EmojiIndexConfig:
 emoji_index_config = EmojiIndexConfig()
 
 
-def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any) -> dict[str, Any]:
+def create_custom_emoji_index(
+    icons_dir: Path, options: dict[str, Any], md: "Markdown"
+) -> dict[str, Any]:
     """
     Create emoji index including both standard emojis and custom ones.
 
@@ -104,8 +111,8 @@ def custom_emoji_generator(
     alt: str,
     title: str,
     category: str,
-    options: Any,
-    md: Any,
+    options: dict[str, Any],
+    md: "Markdown",
 ) -> Element:
     """
     Custom emoji generator that handles both standard and custom emojis.

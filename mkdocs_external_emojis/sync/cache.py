@@ -1,12 +1,16 @@
 """Cache management for downloaded emojis."""
 
 import json
+import logging
 import shutil
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, cast
 
+from mkdocs_external_emojis.constants import LOGGER_NAME
 from mkdocs_external_emojis.models import CacheConfig, EmojiInfo
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class EmojiCache:
@@ -38,7 +42,12 @@ class EmojiCache:
         try:
             with open(self.metadata_file) as f:
                 return cast("dict[str, Any]", json.load(f))
-        except (OSError, json.JSONDecodeError):
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(
+                "Corrupt or unreadable cache metadata for %s, starting fresh: %s",
+                self.namespace,
+                e,
+            )
             return {}
 
     def _save_metadata(self) -> None:

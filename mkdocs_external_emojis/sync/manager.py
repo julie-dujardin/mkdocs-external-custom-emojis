@@ -1,9 +1,11 @@
 """Sync manager for coordinating emoji downloads and caching."""
 
+import logging
 import shutil
 from collections.abc import Callable
 from pathlib import Path
 
+from mkdocs_external_emojis.constants import LOGGER_NAME
 from mkdocs_external_emojis.models import (
     CacheConfig,
     EmojiOptions,
@@ -12,6 +14,8 @@ from mkdocs_external_emojis.models import (
 from mkdocs_external_emojis.providers.base import AbstractEmojiProvider
 from mkdocs_external_emojis.sync.cache import EmojiCache
 from mkdocs_external_emojis.sync.downloader import DownloadError, EmojiDownloader
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class SyncManager:
@@ -63,6 +67,7 @@ class SyncManager:
         try:
             emojis = provider.fetch_emojis()
         except Exception as e:
+            logger.exception("Failed to fetch emojis from provider %s", namespace)
             return SyncResult(
                 provider=provider.config.type.value,
                 namespace=namespace,

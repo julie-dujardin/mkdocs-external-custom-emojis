@@ -1,6 +1,7 @@
 """Emoji downloader for fetching images from URLs."""
 
 import contextlib
+import logging
 import tempfile
 from collections.abc import Callable
 from pathlib import Path
@@ -8,7 +9,10 @@ from pathlib import Path
 import requests
 from PIL import Image
 
+from mkdocs_external_emojis.constants import LOGGER_NAME
 from mkdocs_external_emojis.models import EmojiInfo
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class DownloadError(Exception):
@@ -139,8 +143,7 @@ class EmojiDownloader:
             try:
                 results[emoji.name] = self.download(emoji)
             except DownloadError as e:
-                # Log error but continue with other emojis
-                print(f"Warning: {e}")
+                logger.warning("Failed to download emoji %s: %s", emoji.name, e)
                 continue
 
         return results
