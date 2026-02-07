@@ -120,10 +120,34 @@ Choose how emojis are named:
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
-| `type` | string | ✓ | Provider type (`"slack"`) |
+| `type` | string | ✓ | Provider type (`"slack"`, `"discord"`) |
 | `namespace` | string | ✓ | Unique namespace for this provider |
-| `token_env` | string | ✓ | Environment variable name |
+| `token_env` | string | ✓ | Environment variable containing the API token |
+| `tenant_id` | string |  | Env var for tenant/server ID (required for Discord) |
 | `enabled` | boolean |  | Enable/disable this provider |
+
+#### Slack Provider
+
+```toml
+[[providers]]
+type = "slack"
+namespace = "slack"
+token_env = "SLACK_TOKEN"
+```
+
+#### Discord Provider
+
+```toml
+[[providers]]
+type = "discord"
+namespace = "discord"
+token_env = "DISCORD_BOT_TOKEN"
+tenant_id = "DISCORD_GUILD_ID"  # Env var containing guild/server ID
+```
+
+!!! info "Discord Setup"
+    - `token_env`: Env var containing the bot token
+    - `tenant_id`: Env var containing the guild/server ID (right-click server → Copy Server ID with Developer Mode enabled)
 
 #### Multiple Providers
 
@@ -228,13 +252,17 @@ The plugin automatically adds `overrides/assets/emojis` to `custom_icons`.
 
 ## Environment Variables
 
-All sensitive data should be in environment variables:
+All sensitive data (tokens) should be in environment variables:
 
 ```bash
-# Required
+# Slack
 export SLACK_TOKEN="xoxp-..."
 
-# Multiple providers
+# Discord
+export DISCORD_BOT_TOKEN="MTIz..."
+export DISCORD_GUILD_ID="123456789012345678"
+
+# Multiple Slack workspaces
 export SLACK_TOKEN="xoxp-personal-..."
 export WORK_SLACK_TOKEN="xoxp-work-..."
 ```
@@ -247,6 +275,8 @@ export WORK_SLACK_TOKEN="xoxp-work-..."
     - name: Build docs
       env:
         SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+        DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+        DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
       run: mkdocs build
     ```
 
@@ -258,6 +288,8 @@ export WORK_SLACK_TOKEN="xoxp-work-..."
         - mkdocs build
       variables:
         SLACK_TOKEN: $SLACK_TOKEN
+        DISCORD_BOT_TOKEN: $DISCORD_BOT_TOKEN
+        DISCORD_GUILD_ID: $DISCORD_GUILD_ID
     ```
 
 === "Environment File"
@@ -265,7 +297,8 @@ export WORK_SLACK_TOKEN="xoxp-work-..."
     ```bash
     # .env (don't commit!)
     SLACK_TOKEN=xoxp-...
-    WORK_SLACK_TOKEN=xoxp-...
+    DISCORD_BOT_TOKEN=MTIz...
+    DISCORD_GUILD_ID=123456789012345678
     ```
 
 ## Next Steps

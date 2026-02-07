@@ -12,8 +12,7 @@ from mkdocs_external_emojis.config import (
     load_config,
     validate_environment,
 )
-from mkdocs_external_emojis.models import ProviderType
-from mkdocs_external_emojis.providers import ProviderError, SlackEmojiProvider
+from mkdocs_external_emojis.providers import ProviderError, create_provider
 from mkdocs_external_emojis.sync import EmojiCache, SyncManager
 
 
@@ -94,14 +93,7 @@ def sync(config: str, provider: str | None, force: bool, dry_run: bool) -> None:
 
         # Create provider
         try:
-            if provider_config.type == ProviderType.SLACK:
-                provider_instance = SlackEmojiProvider(provider_config)
-            else:
-                click.echo(
-                    f"  Error: Unsupported provider type: {provider_config.type}",
-                    err=True,
-                )
-                continue
+            provider_instance = create_provider(provider_config)
         except ProviderError as e:
             click.echo(f"  Error: {e}", err=True)
             total_errors += 1
@@ -185,10 +177,7 @@ def list(config: str, provider: str | None, search: str | None, format: str) -> 
     for provider_config in providers_to_list:
         # Create provider
         try:
-            if provider_config.type == ProviderType.SLACK:
-                provider_instance = SlackEmojiProvider(provider_config)
-            else:
-                continue
+            provider_instance = create_provider(provider_config)
         except ProviderError as e:
             click.echo(f"Error: {e}", err=True)
             continue
@@ -274,14 +263,11 @@ def validate(config: str, check_env: bool, test_providers: bool) -> None:
 
         for provider_config in providers:
             try:
-                if provider_config.type == ProviderType.SLACK:
-                    provider_instance = SlackEmojiProvider(provider_config)
-                    emoji_count = provider_instance.validate_config()
-                    click.echo(
-                        f"✓ {provider_config.namespace}: Connection successful - found {emoji_count} emojis"
-                    )
-                else:
-                    click.echo(f"⚠ {provider_config.namespace}: Unsupported type")
+                provider_instance = create_provider(provider_config)
+                emoji_count = provider_instance.validate_config()
+                click.echo(
+                    f"✓ {provider_config.namespace}: Connection successful - found {emoji_count} emojis"
+                )
             except ProviderError as e:
                 click.echo(f"✗ {provider_config.namespace}: {e}", err=True)
 

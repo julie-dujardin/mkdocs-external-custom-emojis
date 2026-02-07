@@ -3,7 +3,7 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 from mkdocs.config import base, config_options
@@ -15,9 +15,11 @@ from mkdocs_external_emojis.emoji_index import (
     custom_emoji_generator,
     set_base_path,
 )
-from mkdocs_external_emojis.models import EmojiConfig, ProviderType
-from mkdocs_external_emojis.providers import ProviderError, SlackEmojiProvider
+from mkdocs_external_emojis.providers import ProviderError, create_provider
 from mkdocs_external_emojis.sync import SyncManager
+
+if TYPE_CHECKING:
+    from mkdocs_external_emojis.models import EmojiConfig
 
 logger = logging.getLogger("mkdocs.plugins.external-emojis")
 
@@ -115,7 +117,7 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
 
             # Create provider instance
             try:
-                provider = self._create_provider(provider_config)
+                provider = create_provider(provider_config)
             except ProviderError as e:
                 error_msg = f"Failed to initialize provider {provider_config.namespace}: {e}"
                 if self.config.fail_on_error:
@@ -178,24 +180,6 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
 
         except Exception as e:
             logger.warning(f"Failed to copy emoji files: {e}")
-
-    def _create_provider(self, provider_config: Any) -> Any:
-        """
-        Create provider instance based on configuration.
-
-        Args:
-            provider_config: Provider configuration
-
-        Returns:
-            Provider instance
-
-        Raises:
-            ProviderError: If provider type is unsupported
-        """
-        if provider_config.type == ProviderType.SLACK:
-            return SlackEmojiProvider(provider_config)
-
-        raise ProviderError(f"Unsupported provider type: {provider_config.type}")
 
     def _configure_pymdownx_emoji(self, config: Any, icons_dir: Path) -> None:
         """

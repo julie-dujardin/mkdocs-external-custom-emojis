@@ -11,6 +11,14 @@ max_size_kb = 500
 
 # Slack provider
 [[providers]]
+type = "discord"
+namespace = "discord"
+token_env = "DISCORD_BOT_TOKEN"
+tenant_id = "DISCORD_GUILD_ID"
+enabled = true
+
+# Slack provider
+[[providers]]
 type = "slack"
 namespace = "slack"
 token_env = "SLACK_TOKEN"

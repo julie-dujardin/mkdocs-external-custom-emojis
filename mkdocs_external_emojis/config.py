@@ -141,11 +141,12 @@ enabled = true
 # include_patterns = ["party*", "cat*"]  # Only sync matching emojis
 # exclude_patterns = ["*-old"]           # Skip matching emojis
 
-# Multiple providers example:
+# Discord provider example:
 # [[providers]]
-# type = "slack"
-# namespace = "work"
-# token_env = "WORK_SLACK_TOKEN"
+# type = "discord"
+# namespace = "discord"                # Emojis will be :discord-emoji-name:
+# token_env = "DISCORD_BOT_TOKEN"      # Bot token environment variable
+# tenant_id = "DISCORD_GUILD_ID"       # Guild/server ID environment variable
 # enabled = true
 """
 

@@ -10,7 +10,7 @@ class ProviderType(StrEnum):
     """Supported emoji provider types."""
 
     SLACK = "slack"
-    # Future: DISCORD = "discord", TEAMS = "teams", etc.
+    DISCORD = "discord"
 
 
 class EmojiFormat(StrEnum):
@@ -74,6 +74,7 @@ class ProviderConfig:
     namespace: str
     token_env: str
     enabled: bool = True
+    tenant_id: str | None = None  # Env var for tenant/server ID (Discord: guild ID)
     filters: ProviderFilter = field(default_factory=ProviderFilter)
 
     def __post_init__(self) -> None:
