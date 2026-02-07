@@ -123,63 +123,17 @@ plugins:
 
 ## CLI Commands
 
-### Initialize Configuration
+The plugin includes a CLI for managing emojis outside of the build process:
 
 ```bash
-mkdocs-emoji init
+mkdocs-emoji init      # Initialize configuration
+mkdocs-emoji sync      # Sync emojis from providers
+mkdocs-emoji list      # List available emojis
+mkdocs-emoji validate  # Validate configuration
+mkdocs-emoji cache     # Show cache info
 ```
 
-### Sync Emojis
-
-```bash
-# Sync all providers
-mkdocs-emoji sync
-
-# Force re-download
-mkdocs-emoji sync --force
-
-# Sync specific provider
-mkdocs-emoji sync --provider slack
-
-# Dry run
-mkdocs-emoji sync --dry-run
-```
-
-### List Emojis
-
-```bash
-# List all emojis
-mkdocs-emoji list
-
-# Search emojis
-mkdocs-emoji list --search party
-
-# JSON output
-mkdocs-emoji list --format json
-```
-
-### Validate Configuration
-
-```bash
-# Validate config file
-mkdocs-emoji validate
-
-# Check environment variables
-mkdocs-emoji validate --check-env
-
-# Test provider connections
-mkdocs-emoji validate --test-providers
-```
-
-### Cache Management
-
-```bash
-# Show cache info
-mkdocs-emoji cache
-
-# Show specific provider
-mkdocs-emoji cache --provider slack
-```
+See the [CLI documentation](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/user-guide/cli/) for all options.
 
 ## How It Works
 
@@ -191,35 +145,21 @@ mkdocs-emoji cache --provider slack
 
 ## CI/CD Integration
 
-### GitHub Actions
+Add your provider tokens as GitHub secrets (e.g., `SLACK_TOKEN`), then use them in your workflow:
 
 ```yaml
-name: Deploy Docs
-
-on:
-  push:
-    branches: [main]
-
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    env:
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install mkdocs-material mkdocs-external-custom-emojis
-
-      - name: Build docs
-        env:
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-        run: mkdocs build
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+          python-version: '3.12'
+      - run: pip install mkdocs-material mkdocs-external-custom-emojis
+      - run: mkdocs build
 ```
+
+See the [Deployment Guide](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/deployment/) for complete GitHub Pages setup instructions.

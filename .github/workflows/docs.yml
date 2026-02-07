@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: mkdocs-build-tokens
     env:
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
     steps:

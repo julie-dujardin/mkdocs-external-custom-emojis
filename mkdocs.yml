@@ -73,6 +73,7 @@ nav:
       - Installation: getting-started/installation.md
       - Quick Start: getting-started/quickstart.md
       - Configuration: getting-started/configuration.md
+      - Deployment: getting-started/deployment.md
   - User Guide:
       - CLI Commands: user-guide/cli.md
   - Development:
