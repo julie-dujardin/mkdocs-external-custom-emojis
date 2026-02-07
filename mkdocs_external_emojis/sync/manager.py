@@ -40,7 +40,7 @@ class SyncManager:
         self.icons_dir = icons_dir
         self.downloader = EmojiDownloader(
             max_size_kb=emoji_options.max_size_kb,
-            timeout=30,
+            timeout=emoji_options.download_timeout,
         )
 
     def sync_provider(

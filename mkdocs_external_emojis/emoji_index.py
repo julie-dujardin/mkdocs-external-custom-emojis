@@ -15,6 +15,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(LOGGER_NAME)
 
+# Attribute name for storing config on Markdown instance
+_MD_CONFIG_ATTR = "_external_emoji_config"
+
 
 @dataclass
 class EmojiIndexConfig:
@@ -24,17 +27,13 @@ class EmojiIndexConfig:
     namespace_prefix_required: bool = False
     emoji_paths: dict[str, str] = field(default_factory=dict)
 
-    def reset(self) -> None:
-        """Reset emoji paths for a fresh build."""
-        self.emoji_paths.clear()
-
-
-# Module-level singleton instance
-emoji_index_config = EmojiIndexConfig()
-
 
 def create_custom_emoji_index(
-    icons_dir: Path, options: dict[str, Any], md: "Markdown"
+    icons_dir: Path,
+    options: dict[str, Any],
+    md: "Markdown",
+    base_path: str = "/",
+    namespace_prefix_required: bool = False,
 ) -> dict[str, Any]:
     """
     Create emoji index including both standard emojis and custom ones.
@@ -43,6 +42,8 @@ def create_custom_emoji_index(
         icons_dir: Path to custom icons directory
         options: Options from pymdownx.emoji
         md: Markdown instance
+        base_path: Base path for emoji URLs
+        namespace_prefix_required: Whether namespace prefix is required
 
     Returns:
         Emoji index dictionary
@@ -50,8 +51,12 @@ def create_custom_emoji_index(
     # Start with standard Twemoji index
     index = twemoji(options, md)
 
-    # Add custom emojis from each namespace
-    emoji_index_config.reset()
+    # Create fresh config for this build and store on md instance
+    config = EmojiIndexConfig(
+        base_path=base_path,
+        namespace_prefix_required=namespace_prefix_required,
+    )
+    setattr(md, _MD_CONFIG_ATTR, config)
 
     if icons_dir.exists():
         for namespace_dir in icons_dir.iterdir():
@@ -80,7 +85,7 @@ def create_custom_emoji_index(
                 # Add with namespace prefix (e.g., :slack-partyparrot:)
                 full_name = f"{namespace}-{emoji_name}"
                 full_name_with_colons = f":{full_name}:"
-                emoji_index_config.emoji_paths[full_name] = rel_path
+                config.emoji_paths[full_name] = rel_path
                 # Use a placeholder Unicode (U+E000 is in Private Use Area)
                 index["emoji"][full_name_with_colons] = {
                     "name": full_name,
@@ -90,9 +95,9 @@ def create_custom_emoji_index(
                 index["alias"][full_name_with_colons] = full_name_with_colons
 
                 # Also add without prefix (e.g., :partyparrot:) unless namespace prefix is required
-                if not emoji_index_config.namespace_prefix_required:
+                if not namespace_prefix_required:
                     emoji_name_with_colons = f":{emoji_name}:"
-                    emoji_index_config.emoji_paths[emoji_name] = rel_path
+                    config.emoji_paths[emoji_name] = rel_path
                     index["emoji"][emoji_name_with_colons] = {
                         "name": emoji_name,
                         "unicode": "e000",  # Private Use Area placeholder
@@ -131,20 +136,23 @@ def custom_emoji_generator(
     Returns:
         HTML for the emoji
     """
+    # Get config from md instance
+    config: EmojiIndexConfig | None = getattr(md, _MD_CONFIG_ATTR, None)
+
     # Clean up shortname to get emoji name
     emoji_name = shortname.strip(":")
 
     # Check if this is a custom emoji
-    if emoji_name in emoji_index_config.emoji_paths:
+    if config and emoji_name in config.emoji_paths:
         # Custom emoji - return img Element
-        path = emoji_index_config.emoji_paths[emoji_name]
+        path = config.emoji_paths[emoji_name]
 
         # Create img element
         el = Element("img")
         el.set("class", "twemoji")
         el.set("alt", title)  # Use title (e.g., :partyparrot:) for accessibility
         el.set("title", title)
-        el.set("src", f"{emoji_index_config.base_path}{path}")
+        el.set("src", f"{config.base_path}{path}")
 
         return el
 

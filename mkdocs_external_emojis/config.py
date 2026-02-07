@@ -133,6 +133,7 @@ clean_on_build = false             # Whether to clean cache before each build
 [emojis]
 namespace_prefix_required = false  # If true, only :<namespace>-<emoji>: works
 max_size_kb = 500                  # Skip emojis larger than this
+download_timeout = 30              # Request timeout in seconds
 
 # Slack provider
 [[providers]]

@@ -7,10 +7,10 @@ from xml.etree.ElementTree import Element
 import pytest
 
 from mkdocs_external_emojis.emoji_index import (
+    _MD_CONFIG_ATTR,
     EmojiIndexConfig,
     create_custom_emoji_index,
     custom_emoji_generator,
-    emoji_index_config,
 )
 
 
@@ -24,30 +24,23 @@ class TestEmojiIndexConfig:
         assert config.namespace_prefix_required is False
         assert config.emoji_paths == {}
 
-    def test_reset_clears_emoji_paths(self) -> None:
-        """Test that reset clears emoji paths."""
-        config = EmojiIndexConfig()
-        config.emoji_paths["test"] = "/path/to/test.png"
-        config.emoji_paths["other"] = "/path/to/other.gif"
-
-        config.reset()
-
-        assert config.emoji_paths == {}
-
 
 class TestCustomEmojiGenerator:
     """Tests for custom_emoji_generator function."""
 
-    @pytest.fixture(autouse=True)
-    def reset_config(self) -> None:
-        """Reset emoji index config before each test."""
-        emoji_index_config.reset()
-        emoji_index_config.base_path = "/"
+    @pytest.fixture
+    def md_with_config(self) -> MagicMock:
+        """Create a mock Markdown instance with emoji config."""
+        md = MagicMock()
+        config = EmojiIndexConfig(base_path="/")
+        setattr(md, _MD_CONFIG_ATTR, config)
+        return md
 
-    def test_generates_img_element_for_custom_emoji(self) -> None:
+    def test_generates_img_element_for_custom_emoji(self, md_with_config: MagicMock) -> None:
         """Test that custom emojis generate img elements."""
         # Register a custom emoji path
-        emoji_index_config.emoji_paths["partyparrot"] = "assets/emojis/slack/partyparrot.gif"
+        config = getattr(md_with_config, _MD_CONFIG_ATTR)
+        config.emoji_paths["partyparrot"] = "assets/emojis/slack/partyparrot.gif"
 
         element = custom_emoji_generator(
             index="partyparrot",
@@ -58,7 +51,7 @@ class TestCustomEmojiGenerator:
             title=":partyparrot:",
             category="custom",
             options={},
-            md=MagicMock(),
+            md=md_with_config,
         )
 
         assert isinstance(element, Element)
@@ -70,8 +63,10 @@ class TestCustomEmojiGenerator:
 
     def test_respects_base_path(self) -> None:
         """Test that base_path is included in src URL."""
-        emoji_index_config.emoji_paths["cat"] = "assets/emojis/test/cat.png"
-        emoji_index_config.base_path = "/docs/"
+        md = MagicMock()
+        config = EmojiIndexConfig(base_path="/docs/")
+        config.emoji_paths["cat"] = "assets/emojis/test/cat.png"
+        setattr(md, _MD_CONFIG_ATTR, config)
 
         element = custom_emoji_generator(
             index="cat",
@@ -82,14 +77,15 @@ class TestCustomEmojiGenerator:
             title=":cat:",
             category="custom",
             options={},
-            md=MagicMock(),
+            md=md,
         )
 
         assert element.get("src") == "/docs/assets/emojis/test/cat.png"
 
-    def test_handles_namespaced_emoji(self) -> None:
+    def test_handles_namespaced_emoji(self, md_with_config: MagicMock) -> None:
         """Test that namespaced emojis work correctly."""
-        emoji_index_config.emoji_paths["slack-partyparrot"] = "assets/emojis/slack/partyparrot.gif"
+        config = getattr(md_with_config, _MD_CONFIG_ATTR)
+        config.emoji_paths["slack-partyparrot"] = "assets/emojis/slack/partyparrot.gif"
 
         element = custom_emoji_generator(
             index="slack-partyparrot",
@@ -100,7 +96,7 @@ class TestCustomEmojiGenerator:
             title=":slack-partyparrot:",
             category="custom",
             options={},
-            md=MagicMock(),
+            md=md_with_config,
         )
 
         assert element.tag == "img"
@@ -108,7 +104,8 @@ class TestCustomEmojiGenerator:
 
     def test_falls_back_to_standard_emoji(self) -> None:
         """Test that unknown emojis fall back to standard generator."""
-        # Don't register any custom emojis
+        # md without config - should fall back to standard
+        md = MagicMock()
 
         with patch("mkdocs_external_emojis.emoji_index.to_svg") as mock_to_svg:
             mock_element = Element("span")
@@ -123,7 +120,7 @@ class TestCustomEmojiGenerator:
                 title=":smile:",
                 category="people",
                 options={"opt": "value"},
-                md=MagicMock(),
+                md=md,
             )
 
             mock_to_svg.assert_called_once()
@@ -132,11 +129,6 @@ class TestCustomEmojiGenerator:
 
 class TestCreateCustomEmojiIndex:
     """Tests for create_custom_emoji_index function."""
-
-    @pytest.fixture(autouse=True)
-    def reset_config(self) -> None:
-        """Reset emoji index config before each test."""
-        emoji_index_config.reset()
 
     @pytest.fixture
     def icons_dir(self, tmp_path: Path) -> Path:
@@ -178,28 +170,29 @@ class TestCreateCustomEmojiIndex:
             assert ":hidden:" not in index["emoji"]
             assert ":.hidden:" not in index["emoji"]
 
-    def test_stores_emoji_paths(self, icons_dir: Path) -> None:
-        """Test that emoji paths are stored in config."""
+    def test_stores_emoji_paths_on_md_instance(self, icons_dir: Path) -> None:
+        """Test that emoji paths are stored on md instance."""
+        md = MagicMock()
+
         with patch("mkdocs_external_emojis.emoji_index.twemoji") as mock_twemoji:
             mock_twemoji.return_value = {"emoji": {}, "alias": {}}
 
-            create_custom_emoji_index(icons_dir, {}, MagicMock())
+            create_custom_emoji_index(icons_dir, {}, md)
 
-            assert "slack-partyparrot" in emoji_index_config.emoji_paths
-            assert "partyparrot" in emoji_index_config.emoji_paths
-            assert (
-                emoji_index_config.emoji_paths["slack-partyparrot"]
-                == "assets/emojis/slack/partyparrot.gif"
-            )
+            # Config should be stored on md instance
+            config = getattr(md, _MD_CONFIG_ATTR)
+            assert "slack-partyparrot" in config.emoji_paths
+            assert "partyparrot" in config.emoji_paths
+            assert config.emoji_paths["slack-partyparrot"] == "assets/emojis/slack/partyparrot.gif"
 
     def test_namespace_prefix_required(self, icons_dir: Path) -> None:
         """Test that namespace prefix can be required."""
-        emoji_index_config.namespace_prefix_required = True
-
         with patch("mkdocs_external_emojis.emoji_index.twemoji") as mock_twemoji:
             mock_twemoji.return_value = {"emoji": {}, "alias": {}}
 
-            index = create_custom_emoji_index(icons_dir, {}, MagicMock())
+            index = create_custom_emoji_index(
+                icons_dir, {}, MagicMock(), namespace_prefix_required=True
+            )
 
             # Should only have prefixed versions
             assert ":slack-partyparrot:" in index["emoji"]
@@ -238,3 +231,15 @@ class TestCreateCustomEmojiIndex:
 
             assert ":slack-emoji1:" in index["emoji"]
             assert ":discord-emoji2:" in index["emoji"]
+
+    def test_base_path_stored_on_md_instance(self, icons_dir: Path) -> None:
+        """Test that base_path is stored on md instance."""
+        md = MagicMock()
+
+        with patch("mkdocs_external_emojis.emoji_index.twemoji") as mock_twemoji:
+            mock_twemoji.return_value = {"emoji": {}, "alias": {}}
+
+            create_custom_emoji_index(icons_dir, {}, md, base_path="/docs/")
+
+            config = getattr(md, _MD_CONFIG_ATTR)
+            assert config.base_path == "/docs/"

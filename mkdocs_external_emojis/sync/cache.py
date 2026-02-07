@@ -101,22 +101,7 @@ class EmojiCache:
 
     def _get_cached_path(self, emoji: EmojiInfo) -> Path:
         """Get expected path for cached emoji file."""
-        # Get file extension from format or URL
-        if emoji.format:
-            ext = emoji.format.value
-        elif emoji.url:
-            # Try to extract from URL
-            url_lower = emoji.url.lower()
-            for possible_ext in ["svg", "png", "gif", "jpg", "webp"]:
-                if f".{possible_ext}" in url_lower:
-                    ext = possible_ext
-                    break
-            else:
-                ext = "png"  # Default
-        else:
-            ext = "png"
-
-        return self.cache_dir / f"{emoji.name}.{ext}"
+        return self.cache_dir / f"{emoji.name}.{emoji.get_file_extension()}"
 
     def store(
         self,
