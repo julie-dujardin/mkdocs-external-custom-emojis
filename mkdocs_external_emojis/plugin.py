@@ -10,10 +10,10 @@ from mkdocs.config import base, config_options
 from mkdocs.plugins import BasePlugin
 
 from mkdocs_external_emojis.config import ConfigError, load_config, validate_environment
+from mkdocs_external_emojis.constants import DEFAULT_CONFIG_FILE, LOGGER_NAME
 from mkdocs_external_emojis.emoji_index import (
     create_custom_emoji_index,
     custom_emoji_generator,
-    emoji_index_config,
 )
 from mkdocs_external_emojis.providers import ProviderError, create_provider
 from mkdocs_external_emojis.sync import SyncManager
@@ -21,13 +21,13 @@ from mkdocs_external_emojis.sync import SyncManager
 if TYPE_CHECKING:
     from mkdocs_external_emojis.models import EmojiConfig
 
-logger = logging.getLogger("mkdocs.plugins.external-emojis")
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class ExternalEmojisPluginConfig(base.Config):
     """Plugin configuration schema."""
 
-    config_file = config_options.Type(str, default="emoji-config.toml")
+    config_file = config_options.Type(str, default=DEFAULT_CONFIG_FILE)
     icons_dir = config_options.Type(str, default="overrides/assets/emojis")
     enabled = config_options.Type(bool, default=True)
     fail_on_error = config_options.Type(bool, default=True)
@@ -147,7 +147,7 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
             except Exception as e:
                 error_msg = f"Failed to sync {provider_config.namespace}: {e}"
                 if self.config.fail_on_error:
-                    raise Exception(error_msg) from e
+                    raise ProviderError(error_msg) from e
                 logger.warning(error_msg)
 
         logger.info("Emoji sync complete")
@@ -229,13 +229,11 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
                 base_path += "/"
         else:
             base_path = "/"
-        emoji_index_config.base_path = base_path
 
-        # Set namespace prefix requirement from emoji config
-        if self.emoji_config:
-            emoji_index_config.namespace_prefix_required = (
-                self.emoji_config.emojis.namespace_prefix_required
-            )
+        # Get namespace prefix requirement from emoji config
+        namespace_prefix_required = (
+            self.emoji_config.emojis.namespace_prefix_required if self.emoji_config else False
+        )
 
         # Configure pymdownx.emoji with our custom emoji index and generator
         if "mdx_configs" not in config:
@@ -248,7 +246,9 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
 
         # Set custom emoji index function (accepts options and md from pymdownx.emoji)
         def emoji_index_wrapper(options: dict[str, Any], md: Any) -> dict[str, Any]:
-            return create_custom_emoji_index(icons_dir, options, md)
+            return create_custom_emoji_index(
+                icons_dir, options, md, base_path, namespace_prefix_required
+            )
 
         emoji_config["emoji_index"] = emoji_index_wrapper
 

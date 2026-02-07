@@ -1,12 +1,16 @@
 """Cache management for downloaded emojis."""
 
 import json
+import logging
 import shutil
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, cast
 
+from mkdocs_external_emojis.constants import LOGGER_NAME
 from mkdocs_external_emojis.models import CacheConfig, EmojiInfo
+
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class EmojiCache:
@@ -38,7 +42,12 @@ class EmojiCache:
         try:
             with open(self.metadata_file) as f:
                 return cast("dict[str, Any]", json.load(f))
-        except (OSError, json.JSONDecodeError):
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(
+                "Corrupt or unreadable cache metadata for %s, starting fresh: %s",
+                self.namespace,
+                e,
+            )
             return {}
 
     def _save_metadata(self) -> None:
@@ -92,22 +101,7 @@ class EmojiCache:
 
     def _get_cached_path(self, emoji: EmojiInfo) -> Path:
         """Get expected path for cached emoji file."""
-        # Get file extension from format or URL
-        if emoji.format:
-            ext = emoji.format.value
-        elif emoji.url:
-            # Try to extract from URL
-            url_lower = emoji.url.lower()
-            for possible_ext in ["svg", "png", "gif", "jpg", "webp"]:
-                if f".{possible_ext}" in url_lower:
-                    ext = possible_ext
-                    break
-            else:
-                ext = "png"  # Default
-        else:
-            ext = "png"
-
-        return self.cache_dir / f"{emoji.name}.{ext}"
+        return self.cache_dir / f"{emoji.name}.{emoji.get_file_extension()}"
 
     def store(
         self,

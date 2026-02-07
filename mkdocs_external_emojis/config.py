@@ -2,8 +2,10 @@
 
 import os
 import tomllib
+import warnings
 from pathlib import Path
 
+from mkdocs_external_emojis.constants import DEFAULT_CONFIG_FILE
 from mkdocs_external_emojis.models import EmojiConfig, ProviderConfig
 
 
@@ -13,7 +15,7 @@ class ConfigError(Exception):
     pass
 
 
-def load_config(config_path: Path | str = "emoji-config.toml") -> EmojiConfig:
+def load_config(config_path: Path | str = DEFAULT_CONFIG_FILE) -> EmojiConfig:
     """
     Load emoji configuration from TOML file.
 
@@ -69,9 +71,14 @@ def _validate_provider(provider: ProviderConfig) -> None:
         ConfigError: If provider config is invalid
     """
     # Check namespace is valid (alphanumeric, dashes, underscores)
-    if not provider.namespace.replace("-", "").replace("_", "").isalnum():
+    namespace = provider.namespace
+    if not namespace:
+        raise ConfigError("Namespace cannot be empty")
+    if len(namespace) > 64:
+        raise ConfigError(f"Namespace '{namespace}' is too long (max 64 characters)")
+    if not namespace.replace("-", "").replace("_", "").isalnum():
         raise ConfigError(
-            f"Invalid namespace '{provider.namespace}': "
+            f"Invalid namespace '{namespace}': "
             "must contain only alphanumeric characters, dashes, and underscores"
         )
 
@@ -81,8 +88,6 @@ def _validate_provider(provider: ProviderConfig) -> None:
 
     # Check if environment variable exists (warning, not error)
     if not os.getenv(provider.token_env):
-        import warnings
-
         warnings.warn(
             f"Environment variable '{provider.token_env}' not set for "
             f"provider '{provider.namespace}'. The build will fail if this "
@@ -109,7 +114,7 @@ def validate_environment(config: EmojiConfig) -> list[str]:
     return missing
 
 
-def create_default_config(path: Path | str = "emoji-config.toml") -> None:
+def create_default_config(path: Path | str = DEFAULT_CONFIG_FILE) -> None:
     """
     Create a default configuration file.
 
@@ -128,6 +133,7 @@ clean_on_build = false             # Whether to clean cache before each build
 [emojis]
 namespace_prefix_required = false  # If true, only :<namespace>-<emoji>: works
 max_size_kb = 500                  # Skip emojis larger than this
+download_timeout = 30              # Request timeout in seconds
 
 # Slack provider
 [[providers]]

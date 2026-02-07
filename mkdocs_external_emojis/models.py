@@ -2,8 +2,9 @@
 
 from dataclasses import dataclass, field
 from enum import StrEnum
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import Any, cast
+from urllib.parse import urlparse
 
 
 class ProviderType(StrEnum):
@@ -38,19 +39,37 @@ class EmojiInfo:
         """Check if this emoji is an alias."""
         return self.alias_of is not None
 
+    @staticmethod
+    def _detect_format_from_url(url: str) -> EmojiFormat | None:
+        """Detect emoji format from URL path extension."""
+        path = urlparse(url).path
+        suffix = PurePath(path).suffix.lower().lstrip(".")
+        try:
+            return EmojiFormat(suffix)
+        except ValueError:
+            return None
+
+    def get_file_extension(self) -> str:
+        """
+        Get file extension for this emoji.
+
+        Returns:
+            File extension (without dot), defaults to 'png'
+        """
+        if self.format:
+            return self.format.value
+
+        if self.url:
+            fmt = self._detect_format_from_url(self.url)
+            if fmt:
+                return fmt.value
+
+        return "png"
+
     @classmethod
     def from_url(cls, name: str, url: str) -> "EmojiInfo":
         """Create EmojiInfo from name and URL."""
-        # Detect format from URL
-        url_lower = url.lower()
-        emoji_format = None
-
-        for fmt in EmojiFormat:
-            if f".{fmt.value}" in url_lower:
-                emoji_format = fmt
-                break
-
-        return cls(name=name, url=url, format=emoji_format)
+        return cls(name=name, url=url, format=cls._detect_format_from_url(url))
 
     @classmethod
     def from_alias(cls, name: str, target: str) -> "EmojiInfo":
@@ -106,6 +125,7 @@ class EmojiOptions:
 
     namespace_prefix_required: bool = False  # If true, only :<namespace>-<emoji>: works
     max_size_kb: int = 500
+    download_timeout: int = 30  # Request timeout in seconds
 
     def format_emoji_name(self, namespace: str, name: str) -> str:
         """
