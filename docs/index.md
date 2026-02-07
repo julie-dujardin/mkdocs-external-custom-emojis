@@ -23,6 +23,7 @@ We love cats too: :catjam: :cat-dance: :meow_party:
 - :material-folder-multiple: **Multiple Providers** - Support multiple Slack or Discord workspaces
 - :material-filter: **Filtering** - Include/exclude emoji patterns
 - :material-console: **CLI Tools** - Manage emojis with built-in CLI commands
+- :material-wheelchair-accessibility: **Accessible** - Screen reader friendly with proper alt text
 
 ## Quick Example
 

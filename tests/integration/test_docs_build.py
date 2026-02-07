@@ -129,7 +129,7 @@ class TestEmojiRendering:
             )
 
     def test_emoji_alt_text(self, test_page_html):
-        """Verify emoji images have appropriate title text."""
+        """Verify emoji images have appropriate alt and title text for accessibility."""
         img_tags = test_page_html.find_all("img")
         emoji_images = [
             img for img in img_tags if img.get("class") and "twemoji" in img.get("class", [])
@@ -137,7 +137,12 @@ class TestEmojiRendering:
 
         for img in emoji_images:
             title = img.get("title", "")
+            alt = img.get("alt", "")
             # Title should contain the emoji name in :name: format
             assert title.startswith(":") and title.endswith(":"), (
                 f"Emoji title should be in :name: format, got: {title}"
+            )
+            # Alt text should match title for accessibility (screen readers, copy-paste)
+            assert alt == title, (
+                f"Emoji alt text should match title for accessibility, got alt='{alt}' title='{title}'"
             )
