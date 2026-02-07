@@ -1,4 +1,5 @@
 site_name: MkDocs External Custom Emojis
+site_url: https://julie-dujardin.github.io/mkdocs-external-custom-emojis/
 site_description: Sync custom emojis from Slack and other providers into MkDocs Material
 site_author: Julie
 repo_url: https://github.com/julie-dujardin/mkdocs-external-custom-emojis

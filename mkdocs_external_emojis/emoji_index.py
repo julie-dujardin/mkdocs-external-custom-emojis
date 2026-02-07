@@ -12,6 +12,20 @@ logger = logging.getLogger("mkdocs.plugins.external-emojis")
 # Global storage for custom emoji paths (will be set by plugin)
 _custom_emoji_paths: dict[str, str] = {}
 
+# Base path for the site (e.g., "/mkdocs-external-custom-emojis/")
+_base_path: str = "/"
+
+
+def set_base_path(base_path: str) -> None:
+    """
+    Set the base path for emoji URLs.
+
+    Args:
+        base_path: Base path of the site (e.g., "/mkdocs-external-custom-emojis/")
+    """
+    global _base_path
+    _base_path = base_path
+
 
 def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any) -> dict[str, Any]:
     """
@@ -123,7 +137,7 @@ def custom_emoji_generator(
         el.set("class", "twemoji")
         el.set("alt", alt)
         el.set("title", title)
-        el.set("src", f"../{path}")
+        el.set("src", f"{_base_path}{path}")
 
         return el
 

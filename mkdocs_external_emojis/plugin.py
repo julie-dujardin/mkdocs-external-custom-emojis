@@ -4,12 +4,17 @@ import logging
 import shutil
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from mkdocs.config import base, config_options
 from mkdocs.plugins import BasePlugin
 
 from mkdocs_external_emojis.config import ConfigError, load_config, validate_environment
-from mkdocs_external_emojis.emoji_index import create_custom_emoji_index, custom_emoji_generator
+from mkdocs_external_emojis.emoji_index import (
+    create_custom_emoji_index,
+    custom_emoji_generator,
+    set_base_path,
+)
 from mkdocs_external_emojis.models import EmojiConfig, ProviderType
 from mkdocs_external_emojis.providers import ProviderError, SlackEmojiProvider
 from mkdocs_external_emojis.sync import SyncManager
@@ -229,6 +234,18 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
                 "emojis will not be available. Please add it to your mkdocs.yml"
             )
             return
+
+        # Extract base path from site_url for absolute emoji paths
+        site_url = config.get("site_url", "") or ""
+        if site_url:
+            parsed = urlparse(site_url)
+            base_path = parsed.path
+            # Ensure base_path ends with /
+            if not base_path.endswith("/"):
+                base_path += "/"
+        else:
+            base_path = "/"
+        set_base_path(base_path)
 
         # Configure pymdownx.emoji with our custom emoji index and generator
         if "mdx_configs" not in config:
