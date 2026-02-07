@@ -79,7 +79,7 @@ markdown_extensions:
   - pymdownx.emoji  # The plugin auto-configures this
 ```
 
-!!! tip "Plugin Order"
+!!! tip "Plugin Order :this_is_fine:"
     Place `external-emojis` before other plugins that might use emojis.
 
 ## Step 5: Sync Emojis
@@ -139,7 +139,7 @@ By default, both the short form (`:partyparrot:`) and the namespaced form (`:sla
    mkdocs-emoji validate --check-env --test-providers
    ```
 
-### Token issues?
+### Token issues? :rubberduck:
 
 === "Slack"
 

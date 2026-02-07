@@ -16,7 +16,7 @@ uv sync --all-groups
 pre-commit install
 ```
 
-## Running Tests
+## Running Tests :thumbs_up:
 
 ```bash
 # Run all tests

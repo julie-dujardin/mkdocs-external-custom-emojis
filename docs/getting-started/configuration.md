@@ -139,7 +139,7 @@ tenant_id = "DISCORD_GUILD_ID"  # Env var containing guild/server ID
     - `token_env`: Env var containing the bot token
     - `tenant_id`: Env var containing the guild/server ID (right-click server → Copy Server ID with Developer Mode enabled)
 
-#### Multiple Providers
+#### Multiple Providers :mind_blown:
 
 ```toml
 # Personal Slack
@@ -177,7 +177,7 @@ include_patterns = ["party*", "cat*", "dog*"]  # Only these
 exclude_patterns = ["*-old", "*-backup"]        # Skip these
 ```
 
-!!! info "Pattern Matching"
+!!! info "Pattern Matching :galaxy_brain:"
     - Uses standard glob patterns (`*`, `?`, `[abc]`)
     - `include_patterns` - whitelist (only sync matching)
     - `exclude_patterns` - blacklist (skip matching)

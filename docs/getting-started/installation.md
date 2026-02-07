@@ -12,7 +12,7 @@
 pip install mkdocs-external-custom-emojis
 ```
 
-## Install with uv (Recommended)
+## Install with uv (Recommended) :stonks:
 
 ```bash
 uv add mkdocs-external-custom-emojis

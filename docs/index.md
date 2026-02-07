@@ -10,9 +10,9 @@
 
 Use your organization's custom Slack or Discord emojis directly in MkDocs documentation with the familiar `:emoji-name:` syntax.
 
-Check out our party parrot: :partyparrot:
+Check out our party parrot: :partyparrot: Documentation stonks! :stonks:
 
-We love cats too: :catjam: :cat-dance: :meow_party: :meow-bongo-cat:
+We love cats too: :catjam: :cat-dance: :meow_party: :meow-bongo-cat: :typingcat:
 
 ## Key Features
 

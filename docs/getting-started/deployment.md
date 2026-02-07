@@ -108,7 +108,7 @@ env:
 
 ## Troubleshooting :goose_warning:
 
-### Build Fails with Token Error
+### Build Fails with Token Error :facepalm:
 
 - Verify the secret name matches `token_env` in your `emoji-config.toml`
 - Check that the secret is added at the repository level, not environment level

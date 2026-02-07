@@ -31,7 +31,7 @@ mkdocs-emoji sync --dry-run        # Preview without syncing
 | `--force` | `-f` | Force re-download even if cached |
 | `--dry-run` | | Show what would be synced |
 
-### list
+### list :typingcat:
 
 List available emojis.
 
@@ -49,7 +49,7 @@ mkdocs-emoji list --provider slack # Filter by provider
 | `--search` | `-s` | Search emoji names |
 | `--format` | `-f` | Output format: `text` or `json` |
 
-### validate
+### validate :thonk:
 
 Validate configuration and test connections.
 
