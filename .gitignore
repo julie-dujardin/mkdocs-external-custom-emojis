@@ -19,6 +19,3 @@ site/
 
 # Secrets
 .env
-
-# Local config
-emoji-config.toml

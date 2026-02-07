@@ -1,0 +1,17 @@
+# Cache configuration
+[cache]
+directory = ".mkdocs_emoji_cache"
+ttl_hours = 24
+clean_on_build = false
+
+# Global emoji options
+[emojis]
+prefix_format = "name-only"
+max_size_kb = 500
+
+# Slack provider
+[[providers]]
+type = "slack"
+namespace = "slack"
+token_env = "SLACK_TOKEN"
+enabled = true
