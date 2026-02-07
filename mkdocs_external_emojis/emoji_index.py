@@ -135,7 +135,7 @@ def custom_emoji_generator(
         # Create img element
         el = Element("img")
         el.set("class", "twemoji")
-        el.set("alt", alt)
+        el.set("alt", title)  # Use title (e.g., :partyparrot:) for accessibility
         el.set("title", title)
         el.set("src", f"{emoji_index_config.base_path}{path}")
 

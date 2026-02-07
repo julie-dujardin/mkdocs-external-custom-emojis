@@ -29,7 +29,7 @@ jobs:
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.0
 
-  test:
+  unit:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -50,8 +50,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
-      - name: Run tests
-        run: uv run pytest -v --cov --cov-report=xml
+      - name: Run unit tests
+        run: uv run pytest tests/unit -v --cov --cov-report=xml
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
@@ -61,3 +61,28 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
+
+  integration:
+    runs-on: ubuntu-latest
+    environment:
+      name: mkdocs-build-tokens
+    env:
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync --group docs --dev
+
+      - name: Run integration tests
+        run: uv run pytest tests/integration -v

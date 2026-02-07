@@ -17,12 +17,12 @@ We love cats too: :catjam: :cat-dance: :meow_party:
 ## Key Features
 
 - :material-sync: **Automatic Sync** - Emojis sync automatically during MkDocs build
-- :material-shield-check: **Secure** - Tokens stored in environment variables, never in config files
 - :material-database: **Smart Caching** - TTL-based caching to minimize API calls
-- :material-puzzle: **Extensible** - Easy to add new providers (Teams, etc.)
-- :material-folder-multiple: **Multiple Providers** - Support multiple Slack or Discord workspaces
+- :material-puzzle: **Extensible** - Easy to add new providers
+- :material-folder-multiple: **Multiple Providers** - Support multiple Slack or Discord workspaces/servers
 - :material-filter: **Filtering** - Include/exclude emoji patterns
 - :material-console: **CLI Tools** - Manage emojis with built-in CLI commands
+- :material-wheelchair-accessibility: **Accessible** - Screen reader friendly with proper alt text
 
 ## Quick Example
 
@@ -67,15 +67,19 @@ We love cats too: :catjam: :cat-dance: :meow_party:
 
 ## How It Works
 
+<div style="text-align: center;" markdown>
+
 ```mermaid
-graph LR
-    A[mkdocs build] --> B[Load emoji-config.toml]
+graph TD
+    A[mkdocs build] --> B["Load emoji-config.toml"]
     B --> C[Fetch from Provider API]
     C --> D[Download to cache]
-    D --> E[Sync to overrides/assets/emojis]
+    D --> E["Sync to overrides/assets/emojis"]
     E --> F[MkDocs renders docs]
-    F --> G[Emojis available!]
+    F --> G["Emojis available!"]
 ```
+
+</div>
 
 1. **Build Start** - MkDocs plugin activates
 2. **Fetch Emoji List** - Provider API called (cached if fresh)
