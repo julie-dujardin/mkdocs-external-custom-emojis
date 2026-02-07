@@ -92,7 +92,7 @@ def custom_emoji_generator(
     category: str,
     options: Any,
     md: Any,
-) -> str:
+) -> Element:
     """
     Custom emoji generator that handles both standard and custom emojis.
 

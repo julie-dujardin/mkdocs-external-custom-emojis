@@ -8,10 +8,11 @@
       "Bash(uv run pytest:*)",
       "Bash(uv remove:*)",
       "Bash(uv run:*)",
-      "Bash(curl:*)",
       "Bash(uv lock:*)",
       "Bash(find:*)",
-      "Bash(python -m pytest:*)"
+      "Bash(python -m pytest:*)",
+      "Bash(uvx ty check:*)",
+      "Bash(unset:*)"
     ]
   }
 }

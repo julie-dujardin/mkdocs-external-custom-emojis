@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
+from typing import Any, cast
 
 
 class ProviderType(StrEnum):
@@ -81,7 +82,7 @@ class ProviderConfig:
             self.type = ProviderType(self.type)
 
         if isinstance(self.filters, dict):
-            self.filters = ProviderFilter(**self.filters)
+            self.filters = ProviderFilter(**cast("dict[str, Any]", self.filters))
 
 
 @dataclass
@@ -139,13 +140,16 @@ class EmojiConfig:
         """Validate and normalize configuration."""
         # Convert dicts to proper types
         if isinstance(self.cache, dict):
-            self.cache = CacheConfig(**self.cache)
+            self.cache = CacheConfig(**cast("dict[str, Any]", self.cache))
 
         if isinstance(self.emojis, dict):
-            self.emojis = EmojiOptions(**self.emojis)
+            self.emojis = EmojiOptions(**cast("dict[str, Any]", self.emojis))
 
         # Convert provider dicts to ProviderConfig objects
-        self.providers = [ProviderConfig(**p) if isinstance(p, dict) else p for p in self.providers]
+        self.providers = [
+            ProviderConfig(**cast("dict[str, Any]", p)) if isinstance(p, dict) else p
+            for p in self.providers
+        ]
 
     def get_enabled_providers(self) -> list[ProviderConfig]:
         """Get list of enabled providers."""
