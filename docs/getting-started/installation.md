@@ -28,7 +28,7 @@ cd mkdocs-external-custom-emojis
 uv sync --dev
 ```
 
-## Verify Installation
+## Verify Installation :lgtm:
 
 Check that the plugin is installed correctly:
 
@@ -41,6 +41,8 @@ You should see output like:
 ```
 mkdocs-emoji, version 0.1.0
 ```
+
+You're all set! :confettis:
 
 ## Next Steps
 

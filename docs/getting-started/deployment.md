@@ -1,4 +1,4 @@
-# Deployment
+# Deployment :shipit: :rocket_animated:
 
 This guide explains how to deploy your MkDocs documentation with external custom emojis using GitHub Actions and GitHub Pages.
 
@@ -106,7 +106,7 @@ env:
   WORK_SLACK_TOKEN: ${{ secrets.WORK_SLACK_TOKEN }}
 ```
 
-## Troubleshooting
+## Troubleshooting :goose_warning:
 
 ### Build Fails with Token Error
 

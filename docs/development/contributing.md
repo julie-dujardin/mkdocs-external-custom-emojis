@@ -1,8 +1,8 @@
-# Contributing
+# Contributing :thankyouparrot:
 
 Thank you for considering contributing to mkdocs-external-custom-emojis!
 
-## Development Setup
+## Development Setup :bob_the_builder:
 
 ```bash
 # Clone repository
@@ -10,7 +10,7 @@ git clone https://github.com/julie-dujardin/mkdocs-external-custom-emojis.git
 cd mkdocs-external-custom-emojis
 
 # Install with uv
-uv sync --dev
+uv sync --all-groups
 
 # Install pre-commit hooks
 pre-commit install
@@ -26,14 +26,12 @@ uv run pytest
 uv run pytest --cov
 
 # Run specific test
-uv run pytest tests/test_models.py::TestEmojiOptions
+uv run pytest tests/unit/test_models.py::TestEmojiOptions
 ```
 
 ## Code Quality
 
 ```bash
 # Run all checks
-uv run ruff check .
-uv run ruff format .
-uv run ty check
+uv run pre-commit run -a
 ```

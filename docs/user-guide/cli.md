@@ -1,4 +1,4 @@
-# CLI Commands
+# CLI Commands :hackerman:
 
 The `mkdocs-emoji` CLI provides commands for managing custom emojis.
 

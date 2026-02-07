@@ -1,4 +1,4 @@
-# Configuration
+# Configuration :claudethinking:
 
 This guide covers all configuration options for mkdocs-external-custom-emojis.
 
@@ -162,7 +162,7 @@ token_env = "ARCHIVE_SLACK_TOKEN"
 enabled = false
 ```
 
-### Filtering
+### Filtering :catjam:
 
 Filter which emojis to sync using glob patterns:
 

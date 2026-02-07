@@ -12,7 +12,7 @@ Use your organization's custom Slack or Discord emojis directly in MkDocs docume
 
 Check out our party parrot: :partyparrot:
 
-We love cats too: :catjam: :cat-dance: :meow_party:
+We love cats too: :catjam: :cat-dance: :meow_party: :meow-bongo-cat:
 
 ## Key Features
 
