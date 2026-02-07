@@ -28,7 +28,7 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker(skip_marker)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def project_root():
     """Return the project root directory."""
     return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
