@@ -12,7 +12,8 @@
       "Bash(find:*)",
       "Bash(python -m pytest:*)",
       "Bash(uvx ty check:*)",
-      "Bash(unset:*)"
+      "Bash(unset:*)",
+      "Bash(tree:*)"
     ]
   }
 }
