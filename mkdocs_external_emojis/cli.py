@@ -277,7 +277,9 @@ def validate(config: str, check_env: bool, test_providers: bool) -> None:
                 if provider_config.type == ProviderType.SLACK:
                     provider_instance = SlackEmojiProvider(provider_config)
                     emoji_count = provider_instance.validate_config()
-                    click.echo(f"✓ {provider_config.namespace}: Connection successful - found {emoji_count} emojis")
+                    click.echo(
+                        f"✓ {provider_config.namespace}: Connection successful - found {emoji_count} emojis"
+                    )
                 else:
                     click.echo(f"⚠ {provider_config.namespace}: Unsupported type")
             except ProviderError as e:

@@ -118,9 +118,7 @@ class SlackEmojiProvider(AbstractEmojiProvider):
 
             if not data.get("ok"):
                 error = data.get("error", "Unknown error")
-                raise ProviderError(
-                    f"Token lacks emoji:read permission: {error}"
-                )
+                raise ProviderError(f"Token lacks emoji:read permission: {error}")
 
             emoji_count = len(data.get("emoji", {}))
             return emoji_count
