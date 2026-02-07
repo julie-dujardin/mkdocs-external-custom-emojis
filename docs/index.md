@@ -1,4 +1,4 @@
-# MkDocs External Custom Emojis
+# External Emojis for MkDocs
 
 Sync custom emojis from external providers (Slack, Discord, etc.) into MkDocs Material
 
