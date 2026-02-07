@@ -1,0 +1,31 @@
+# Example emoji configuration for mkdocs-external-custom-emojis
+
+# Cache configuration
+[cache]
+directory = ".mkdocs_emoji_cache"  # Where to store downloaded emojis
+ttl_hours = 24                     # Re-fetch after 24 hours
+clean_on_build = false             # Whether to clean cache before each build
+
+# Global emoji options
+[emojis]
+prefix_format = "namespace-name"   # "namespace-name", "namespace_name", or "name-only"
+max_size_kb = 500                  # Skip emojis larger than this
+
+# Slack provider
+[[providers]]
+type = "slack"
+namespace = "slack"                # Emojis will be :slack-emoji-name:
+token_env = "SLACK_TOKEN"          # Environment variable name
+enabled = true
+
+# Optional: Filter emojis
+# [providers.filters]
+# include_patterns = ["party*", "cat*"]  # Only sync matching emojis
+# exclude_patterns = ["*-old"]           # Skip matching emojis
+
+# Example: Multiple workspaces
+# [[providers]]
+# type = "slack"
+# namespace = "work"
+# token_env = "WORK_SLACK_TOKEN"
+# enabled = true

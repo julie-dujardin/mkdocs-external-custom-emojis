@@ -5,14 +5,20 @@ build/
 dist/
 wheels/
 *.egg-info
+.coverage
+overrides
+
+# mkdocs
+site/
 
 # Virtual environments
 .venv
 
 # Tooling caches
-.ruff_cache/
-.pytest_cache/
-.mypy_cache/
+.*_cache/
 
 # Secrets
-.env*
+.env
+
+# Local config
+emoji-config.toml
