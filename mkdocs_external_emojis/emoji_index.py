@@ -15,6 +15,9 @@ _custom_emoji_paths: dict[str, str] = {}
 # Base path for the site (e.g., "/mkdocs-external-custom-emojis/")
 _base_path: str = "/"
 
+# Whether namespace prefix is required (only :<namespace>-<emoji>: works)
+_namespace_prefix_required: bool = False
+
 
 def set_base_path(base_path: str) -> None:
     """
@@ -25,6 +28,18 @@ def set_base_path(base_path: str) -> None:
     """
     global _base_path
     _base_path = base_path
+
+
+def set_namespace_prefix_required(required: bool) -> None:
+    """
+    Set whether namespace prefix is required for emoji syntax.
+
+    Args:
+        required: If True, only :<namespace>-<emoji>: works.
+                  If False, both :<emoji>: and :<namespace>-<emoji>: work.
+    """
+    global _namespace_prefix_required
+    _namespace_prefix_required = required
 
 
 def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any) -> dict[str, Any]:
@@ -82,16 +97,16 @@ def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any)
                 }
                 index["alias"][full_name_with_colons] = full_name_with_colons
 
-                # Also add without prefix (e.g., :partyparrot:)
-                # This allows both syntaxes to work
-                emoji_name_with_colons = f":{emoji_name}:"
-                _custom_emoji_paths[emoji_name] = rel_path
-                index["emoji"][emoji_name_with_colons] = {
-                    "name": emoji_name,
-                    "unicode": "e000",  # Private Use Area placeholder
-                    "category": "custom",
-                }
-                index["alias"][emoji_name_with_colons] = emoji_name_with_colons
+                # Also add without prefix (e.g., :partyparrot:) unless namespace prefix is required
+                if not _namespace_prefix_required:
+                    emoji_name_with_colons = f":{emoji_name}:"
+                    _custom_emoji_paths[emoji_name] = rel_path
+                    index["emoji"][emoji_name_with_colons] = {
+                        "name": emoji_name,
+                        "unicode": "e000",  # Private Use Area placeholder
+                        "category": "custom",
+                    }
+                    index["alias"][emoji_name_with_colons] = emoji_name_with_colons
 
     return index
 

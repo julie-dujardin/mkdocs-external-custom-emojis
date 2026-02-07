@@ -22,7 +22,7 @@ clean_on_build = false
 
 # Global emoji options
 [emojis]
-prefix_format = "namespace-name"
+namespace_prefix_required = false
 max_size_kb = 500
 
 # Slack provider
@@ -73,48 +73,38 @@ exclude_patterns = ["*-old"]
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `prefix_format` | string | `namespace-name` | How to format emoji names |
+| `namespace_prefix_required` | boolean | `false` | If true, only `:<namespace>-<emoji>:` works |
 | `max_size_kb` | integer | 500 | Skip emojis larger than this |
 
-#### Prefix Format
+#### Namespace Prefix
 
-Choose how emojis are named:
+By default, both syntaxes work for any emoji:
 
-| Format | Example | Use Case |
-|--------|---------|----------|
-| `namespace-name` | `:slack-partyparrot:` | **Default** - Clear namespace separation |
-| `namespace_name` | `:slack_partyparrot:` | Underscores instead of dashes |
-| `name-only` | `:partyparrot:` | Single provider, shorter names |
+- `:partyparrot:` - short form
+- `:slack-partyparrot:` - namespaced form
 
-=== "namespace-name"
+Set `namespace_prefix_required = true` to require the namespace prefix:
 
-    ```toml
-    [emojis]
-    prefix_format = "namespace-name"
-    ```
-
-    Usage: `:slack-partyparrot:`
-
-=== "namespace_name"
+=== "Default (both work)"
 
     ```toml
     [emojis]
-    prefix_format = "namespace_name"
+    namespace_prefix_required = false
     ```
 
-    Usage: `:slack_partyparrot:`
+    Usage: `:partyparrot:` or `:slack-partyparrot:`
 
-=== "name-only"
+=== "Namespace required"
 
     ```toml
     [emojis]
-    prefix_format = "name-only"
+    namespace_prefix_required = true
     ```
 
-    Usage: `:partyparrot:`
+    Usage: `:slack-partyparrot:` only
 
-    !!! warning
-        Careful with name-only - emoji names may conflict between providers!
+    !!! tip
+        Use this when you have multiple providers with potentially conflicting emoji names.
 
 ### Provider Configuration
 

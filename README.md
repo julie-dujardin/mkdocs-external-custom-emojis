@@ -100,7 +100,7 @@ clean_on_build = false
 
 # Global emoji options
 [emojis]
-prefix_format = "namespace-name"
+namespace_prefix_required = false
 max_size_kb = 500
 
 # Slack provider

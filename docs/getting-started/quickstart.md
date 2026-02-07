@@ -109,6 +109,15 @@ Visit http://localhost:8000 and see your custom emojis in action!
 
 ## Step 7: Use your emojis :stonks:
 
+Use emojis in your markdown with the familiar `:emoji-name:` syntax:
+
+```markdown
+Check out this party parrot: :partyparrot:
+
+Or use the namespaced version: :slack-partyparrot:
+```
+
+By default, both the short form (`:partyparrot:`) and the namespaced form (`:slack-partyparrot:`) work. If you have multiple providers with potentially conflicting names, you can set `namespace_prefix_required = true` in your `emoji-config.toml` to require the namespace prefix.
 
 ## Troubleshooting
 

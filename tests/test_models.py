@@ -82,32 +82,18 @@ class TestProviderConfig:
 class TestEmojiOptions:
     """Tests for EmojiOptions model."""
 
-    def test_format_emoji_name_namespace_dash(self) -> None:
-        """Test namespace-name format."""
-        options = EmojiOptions(prefix_format="namespace-name")
-        result = options.format_emoji_name("slack", "partyparrot")
-        assert result == "slack-partyparrot"
-
-    def test_format_emoji_name_namespace_underscore(self) -> None:
-        """Test namespace_name format."""
-        options = EmojiOptions(prefix_format="namespace_name")
-        result = options.format_emoji_name("slack", "partyparrot")
-        assert result == "slack_partyparrot"
-
-    def test_format_emoji_name_only(self) -> None:
-        """Test name-only format."""
-        options = EmojiOptions(prefix_format="name-only")
-        result = options.format_emoji_name("slack", "partyparrot")
-        assert result == "partyparrot"
-
-    def test_format_emoji_name_invalid_fallback(self) -> None:
-        """Test invalid format falls back to namespace-name."""
-        options = EmojiOptions(prefix_format="invalid-format")
-        result = options.format_emoji_name("slack", "partyparrot")
-        assert result == "slack-partyparrot"
-
-    def test_format_emoji_name_default(self) -> None:
-        """Test default format is namespace-name."""
+    def test_format_emoji_name(self) -> None:
+        """Test format_emoji_name returns namespace-name format."""
         options = EmojiOptions()
         result = options.format_emoji_name("slack", "partyparrot")
         assert result == "slack-partyparrot"
+
+    def test_namespace_prefix_required_default(self) -> None:
+        """Test namespace_prefix_required defaults to False."""
+        options = EmojiOptions()
+        assert options.namespace_prefix_required is False
+
+    def test_namespace_prefix_required_true(self) -> None:
+        """Test namespace_prefix_required can be set to True."""
+        options = EmojiOptions(namespace_prefix_required=True)
+        assert options.namespace_prefix_required is True

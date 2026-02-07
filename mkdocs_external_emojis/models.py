@@ -104,29 +104,21 @@ class CacheConfig:
 class EmojiOptions:
     """Global emoji configuration options."""
 
-    prefix_format: str = "namespace-name"  # "namespace-name", "namespace_name", or "name-only"
+    namespace_prefix_required: bool = False  # If true, only :<namespace>-<emoji>: works
     max_size_kb: int = 500
 
     def format_emoji_name(self, namespace: str, name: str) -> str:
         """
-        Format emoji name according to prefix_format setting.
+        Format emoji name with namespace prefix.
 
         Args:
             namespace: Provider namespace
             name: Emoji name
 
         Returns:
-            Formatted emoji name
+            Formatted emoji name (always namespace-name format)
         """
-        if self.prefix_format == "namespace-name":
-            return f"{namespace}-{name}"
-        elif self.prefix_format == "namespace_name":
-            return f"{namespace}_{name}"
-        elif self.prefix_format == "name-only":
-            return name
-        else:
-            # Default to namespace-name if invalid format
-            return f"{namespace}-{name}"
+        return f"{namespace}-{name}"
 
 
 @dataclass

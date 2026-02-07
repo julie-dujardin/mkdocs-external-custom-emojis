@@ -126,7 +126,7 @@ clean_on_build = false             # Whether to clean cache before each build
 
 # Global emoji options
 [emojis]
-prefix_format = "namespace-name"   # "namespace-name", "namespace_name", or "name-only"
+namespace_prefix_required = false  # If true, only :<namespace>-<emoji>: works
 max_size_kb = 500                  # Skip emojis larger than this
 
 # Slack provider
