@@ -11,8 +11,9 @@ Use your organization's custom emojis directly in MkDocs with the familiar `:emo
 ## Features
 
 - 🔄 **Automatic Sync** - Emojis sync during MkDocs build
-- 💾 **Smart Caching** - TTL-based caching minimizes API calls
 - 🔌 **Multiple Providers** - Slack, Discord, multiple workspaces
+- 🔧 **Extensible** - Easy to add new providers
+- 💾 **Smart Caching** - TTL-based caching minimizes API calls
 - 🎯 **Filtering** - Include/exclude emoji patterns
 - 🖥️ **CLI Tools** - Manage emojis from the command line
 - ♿ **Accessible** - Screen reader friendly with proper alt text
