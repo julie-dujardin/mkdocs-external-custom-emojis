@@ -21,7 +21,7 @@ class SyncManager:
         self,
         cache_config: CacheConfig,
         emoji_options: EmojiOptions,
-        icons_dir: Path = Path("overrides/.icons"),
+        icons_dir: Path = Path("overrides/assets/emojis"),
     ) -> None:
         """
         Initialize sync manager.

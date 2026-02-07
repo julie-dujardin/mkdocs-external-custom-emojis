@@ -66,7 +66,7 @@ graph LR
     A[mkdocs build] --> B[Load emoji-config.toml]
     B --> C[Fetch from Slack API]
     C --> D[Download to cache]
-    D --> E[Sync to overrides/.icons]
+    D --> E[Sync to overrides/assets/emojis]
     E --> F[MkDocs renders docs]
     F --> G[Emojis available!]
 ```
@@ -74,7 +74,7 @@ graph LR
 1. **Build Start** - MkDocs plugin activates
 2. **Fetch Emoji List** - Provider API called (cached if fresh)
 3. **Download Emojis** - Missing/stale emojis downloaded
-4. **Sync to Icons Dir** - Emojis placed in `overrides/.icons/<namespace>/`
+4. **Sync to Icons Dir** - Emojis placed in `overrides/assets/emojis/<namespace>/`
 5. **MkDocs Renders** - Material theme finds custom icons automatically
 
 ## Installation

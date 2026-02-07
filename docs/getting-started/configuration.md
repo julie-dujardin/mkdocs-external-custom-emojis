@@ -201,7 +201,7 @@ exclude_patterns = ["*-old", "*-backup"]        # Skip these
 plugins:
   - external-emojis:
       config_file: emoji-config.toml  # default
-      icons_dir: overrides/.icons      # default
+      icons_dir: overrides/assets/emojis      # default
       enabled: true                    # default
       fail_on_error: true              # default
 ```
@@ -209,7 +209,7 @@ plugins:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `config_file` | string | `emoji-config.toml` | Path to emoji config |
-| `icons_dir` | string | `overrides/.icons` | Where to put synced icons |
+| `icons_dir` | string | `overrides/assets/emojis` | Where to put synced icons |
 | `enabled` | boolean | true | Enable/disable plugin |
 | `fail_on_error` | boolean | true | Fail build on errors |
 
@@ -224,7 +224,7 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 ```
 
-The plugin automatically adds `overrides/.icons` to `custom_icons`.
+The plugin automatically adds `overrides/assets/emojis` to `custom_icons`.
 
 ## Environment Variables
 

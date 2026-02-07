@@ -62,7 +62,7 @@ def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any)
                 emoji_name = emoji_file.stem
 
                 # Store relative path for the generator to use
-                rel_path = f".icons/{namespace}/{emoji_file.name}"
+                rel_path = f"assets/emojis/{namespace}/{emoji_file.name}"
 
                 # Add to the emoji index with both prefixed and unprefixed names
                 if "emoji" not in index:

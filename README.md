@@ -116,7 +116,7 @@ Configure in `mkdocs.yml`:
 plugins:
   - external-emojis:
       config_file: emoji-config.toml  # default
-      icons_dir: overrides/.icons     # default
+      icons_dir: overrides/assets/emojis     # default
       enabled: true                   # default
       fail_on_error: true             # default
 ```
@@ -140,7 +140,7 @@ See the [CLI documentation](https://julie-dujardin.github.io/mkdocs-external-cus
 1. **Build Start** - MkDocs plugin activates
 2. **Fetch Emoji List** - Provider API called (cached if fresh)
 3. **Download Emojis** - Missing/stale emojis downloaded
-4. **Sync to Icons Dir** - Emojis placed in `overrides/.icons/<namespace>/`
+4. **Sync to Icons Dir** - Emojis placed in `overrides/assets/emojis/<namespace>/`
 5. **MkDocs Renders** - Material theme finds custom icons automatically
 
 ## CI/CD Integration

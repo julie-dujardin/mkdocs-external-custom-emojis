@@ -26,7 +26,7 @@ class ExternalEmojisPluginConfig(base.Config):
     """Plugin configuration schema."""
 
     config_file = config_options.Type(str, default="emoji-config.toml")
-    icons_dir = config_options.Type(str, default="overrides/.icons")
+    icons_dir = config_options.Type(str, default="overrides/assets/emojis")
     enabled = config_options.Type(bool, default=True)
     fail_on_error = config_options.Type(bool, default=True)
 
@@ -160,16 +160,16 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
         if not self.config.enabled:
             return
 
-        # Copy emoji files from overrides/.icons to site/.icons
+        # Copy emoji files from overrides/assets/emojis to site/assets/emojis
         icons_dir = Path(self.config.icons_dir)
         if not icons_dir.exists():
             return
 
         site_dir = Path(config["site_dir"])
-        site_icons_dir = site_dir / ".icons"
+        site_icons_dir = site_dir / "assets" / "emojis"
 
         try:
-            # Copy the entire .icons directory
+            # Copy the entire emojis directory
             if site_icons_dir.exists():
                 shutil.rmtree(site_icons_dir)
 

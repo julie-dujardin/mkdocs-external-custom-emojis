@@ -106,7 +106,7 @@ Visit http://localhost:8000 and see your custom emojis in action!
 2. **Verify files exist:**
    ```bash
    ls -la .mkdocs_emoji_cache/slack/
-   ls -la overrides/.icons/slack/
+   ls -la overrides/assets/emojis/slack/
    ```
 
 3. **Validate configuration:**
