@@ -6,15 +6,15 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/mkdocs-external-custom-emojis.svg)](https://pypi.org/project/mkdocs-external-custom-emojis/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Use your organization's custom Slack emojis (or other providers) directly in MkDocs documentation with the familiar `:emoji-name:` syntax.
+Use your organization's custom Slack or Discord emojis directly in MkDocs documentation with the familiar `:emoji-name:` syntax.
 
 ## Features
 
 - 🎯 **Automatic Sync** - Emojis sync automatically during MkDocs build
 - 🔒 **Secure** - Tokens stored in environment variables, never in config files
 - 💾 **Smart Caching** - TTL-based caching to minimize API calls
-- 🔧 **Extensible** - Easy to add new providers (Discord, Teams, etc.)
-- 🎨 **Multiple Providers** - Support multiple Slack workspaces or different providers
+- 🔧 **Extensible** - Easy to add new providers (Teams, etc.)
+- 🎨 **Multiple Providers** - Support multiple Slack or Discord workspaces
 - 🔍 **Filtering** - Include/exclude emoji patterns
 - 📦 **CLI Tools** - Manage emojis with built-in CLI commands
 
@@ -31,19 +31,33 @@ pip install mkdocs-external-custom-emojis
 1. Create `emoji-config.toml` in your project root:
 
 ```toml
+# For Slack
 [[providers]]
 type = "slack"
 namespace = "slack"
 token_env = "SLACK_TOKEN"
+
+# For Discord
+[[providers]]
+type = "discord"
+namespace = "discord"
+token_env = "DISCORD_BOT_TOKEN"
+tenant_id = "DISCORD_GUILD_ID"
 ```
 
-2. Set your Slack token:
+2. Set your provider tokens:
 
 ```bash
+# Slack
 export SLACK_TOKEN="xoxp-your-token-here"
+
+# Discord
+export DISCORD_BOT_TOKEN="your-bot-token-here"
+export DISCORD_GUILD_ID="123456789012345678"
 ```
 
-> Get a Slack token: https://docs.slack.dev/app-management/quickstart-app-settings (requires a bot token with `emoji:read` scope)
+> Get a Slack token: https://docs.slack.dev/app-management/quickstart-app-settings (requires `emoji:read` scope)
+> Get a Discord token: https://discord.com/developers/applications (requires bot with server access)
 
 3. Add the plugin to `mkdocs.yml`:
 
@@ -96,6 +110,14 @@ namespace = "slack"
 token_env = "SLACK_TOKEN"
 enabled = true
 
+# Discord provider
+[[providers]]
+type = "discord"
+namespace = "discord"
+token_env = "DISCORD_BOT_TOKEN"
+tenant_id = "DISCORD_GUILD_ID"
+enabled = true
+
 # Optional: Filter emojis
 [providers.filters]
 include_patterns = ["party*", "cat*"]
@@ -145,7 +167,7 @@ See the [CLI documentation](https://julie-dujardin.github.io/mkdocs-external-cus
 
 ## CI/CD Integration
 
-Add your provider tokens as GitHub secrets (e.g., `SLACK_TOKEN`), then use them in your workflow:
+Add your provider tokens as GitHub secrets (e.g., `SLACK_TOKEN`, `DISCORD_BOT_TOKEN`), then use them in your workflow:
 
 ```yaml
 jobs:
@@ -153,6 +175,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

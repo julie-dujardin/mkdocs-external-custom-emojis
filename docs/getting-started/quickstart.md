@@ -1,23 +1,41 @@
 # Quick Start
 
-Get up and running with custom Slack emojis in your MkDocs site in just a few minutes!
+Get up and running with custom Slack or Discord emojis in your MkDocs site in just a few minutes!
 
-## Step 1: Get a Slack Token
+## Step 1: Get Your Token
 
-1. Go to [https://api.slack.com/apps](https://api.slack.com/apps)
-2. Create a new app or select an existing one
-3. Add the `emoji:read` scope under **OAuth & Permissions**
-4. Install the app to your workspace
-5. Copy the **OAuth Access Token** (starts with `xoxp-`)
+=== "Slack"
 
-## Step 2: Set Environment Variable
+    1. Go to [https://api.slack.com/apps](https://api.slack.com/apps)
+    2. Create a new app or select an existing one
+    3. Add the `emoji:read` scope under **OAuth & Permissions**
+    4. Install the app to your workspace
+    5. Copy the **OAuth Access Token** (starts with `xoxp-`)
 
-Add your Slack token to your environment:
+=== "Discord"
 
-```bash
-# .env
-SLACK_TOKEN=xoxp-your-token-here
-```
+    1. Go to [https://discord.com/developers/applications](https://discord.com/developers/applications)
+    2. Create a new application or select an existing one
+    3. Go to **Bot** and create a bot if needed. It will need the `bot` -> `<Manage/Create> Expressions` permissions.
+    4. Copy the **Bot Token**
+    5. Note your **Guild/Server ID** (enable Developer Mode, right-click server)
+
+## Step 2: Set Environment Variables
+
+=== "Slack"
+
+    ```bash
+    # .env
+    SLACK_TOKEN=xoxp-your-token-here
+    ```
+
+=== "Discord"
+
+    ```bash
+    # .env
+    DISCORD_BOT_TOKEN=your-bot-token-here
+    DISCORD_GUILD_ID=123456789012345678
+    ```
 
 ## Step 3: Initialize Configuration
 
@@ -27,14 +45,26 @@ Create a default configuration file:
 mkdocs-emoji init
 ```
 
-This creates `emoji-config.toml` with sensible defaults:
+This creates `emoji-config.toml`. Update it for your provider:
 
-```toml
-[[providers]]
-type = "slack"
-namespace = "slack"
-token_env = "SLACK_TOKEN"
-```
+=== "Slack"
+
+    ```toml
+    [[providers]]
+    type = "slack"
+    namespace = "slack"
+    token_env = "SLACK_TOKEN"
+    ```
+
+=== "Discord"
+
+    ```toml
+    [[providers]]
+    type = "discord"
+    namespace = "discord"
+    token_env = "DISCORD_BOT_TOKEN"
+    tenant_id = "DISCORD_GUILD_ID"
+    ```
 
 ## Step 4: Add to mkdocs.yml
 
@@ -54,7 +84,7 @@ markdown_extensions:
 
 ## Step 5: Sync Emojis
 
-Download your Slack emojis:
+Download your emojis:
 
 ```bash
 mkdocs-emoji sync
@@ -69,30 +99,16 @@ Syncing slack (namespace: slack)...
 Total: 42 synced, 0 cached, 0 errors
 ```
 
-## Step 6: Use in Markdown
-
-Now use your custom emojis in your documentation:
-
-```markdown
-# Welcome to Our Docs! :slack-wave:
-
-Check out these cool features:
-
-- :slack-rocket: Fast and easy
-- :slack-sparkles: Beautiful emojis
-- :slack-partyparrot: Party time!
-
-!!! success "Success :slack-check:"
-    Custom emojis work everywhere in your docs!
-```
-
-## Step 7: Build Your Docs
+## Step 6: Build Your Docs
 
 ```bash
 mkdocs serve
 ```
 
 Visit http://localhost:8000 and see your custom emojis in action!
+
+## Step 7: Use your emojis :stonks:
+
 
 ## Troubleshooting
 
@@ -116,11 +132,21 @@ Visit http://localhost:8000 and see your custom emojis in action!
 
 ### Token issues?
 
-```bash
-# Test your token
-curl -H "Authorization: Bearer $SLACK_TOKEN" \
-  https://slack.com/api/auth.test
-```
+=== "Slack"
+
+    ```bash
+    # Test your token
+    curl -H "Authorization: Bearer $SLACK_TOKEN" \
+      https://slack.com/api/auth.test
+    ```
+
+=== "Discord"
+
+    ```bash
+    # Test your token
+    curl -H "Authorization: Bot $DISCORD_BOT_TOKEN" \
+      "https://discord.com/api/v10/guilds/$DISCORD_GUILD_ID"
+    ```
 
 ## Next Steps
 
