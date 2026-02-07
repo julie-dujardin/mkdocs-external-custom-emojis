@@ -1,6 +1,7 @@
 """Custom emoji index for pymdownx.emoji integration."""
 
 import logging
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from xml.etree.ElementTree import Element
@@ -9,37 +10,22 @@ from material.extensions.emoji import to_svg, twemoji
 
 logger = logging.getLogger("mkdocs.plugins.external-emojis")
 
-# Global storage for custom emoji paths (will be set by plugin)
-_custom_emoji_paths: dict[str, str] = {}
 
-# Base path for the site (e.g., "/mkdocs-external-custom-emojis/")
-_base_path: str = "/"
+@dataclass
+class EmojiIndexConfig:
+    """Configuration for the emoji index."""
 
-# Whether namespace prefix is required (only :<namespace>-<emoji>: works)
-_namespace_prefix_required: bool = False
+    base_path: str = "/"
+    namespace_prefix_required: bool = False
+    emoji_paths: dict[str, str] = field(default_factory=dict)
 
-
-def set_base_path(base_path: str) -> None:
-    """
-    Set the base path for emoji URLs.
-
-    Args:
-        base_path: Base path of the site (e.g., "/mkdocs-external-custom-emojis/")
-    """
-    global _base_path
-    _base_path = base_path
+    def reset(self) -> None:
+        """Reset emoji paths for a fresh build."""
+        self.emoji_paths.clear()
 
 
-def set_namespace_prefix_required(required: bool) -> None:
-    """
-    Set whether namespace prefix is required for emoji syntax.
-
-    Args:
-        required: If True, only :<namespace>-<emoji>: works.
-                  If False, both :<emoji>: and :<namespace>-<emoji>: work.
-    """
-    global _namespace_prefix_required
-    _namespace_prefix_required = required
+# Module-level singleton instance
+emoji_index_config = EmojiIndexConfig()
 
 
 def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any) -> dict[str, Any]:
@@ -58,8 +44,7 @@ def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any)
     index = twemoji(options, md)
 
     # Add custom emojis from each namespace
-    global _custom_emoji_paths
-    _custom_emoji_paths.clear()
+    emoji_index_config.reset()
 
     if icons_dir.exists():
         for namespace_dir in icons_dir.iterdir():
@@ -88,7 +73,7 @@ def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any)
                 # Add with namespace prefix (e.g., :slack-partyparrot:)
                 full_name = f"{namespace}-{emoji_name}"
                 full_name_with_colons = f":{full_name}:"
-                _custom_emoji_paths[full_name] = rel_path
+                emoji_index_config.emoji_paths[full_name] = rel_path
                 # Use a placeholder Unicode (U+E000 is in Private Use Area)
                 index["emoji"][full_name_with_colons] = {
                     "name": full_name,
@@ -98,9 +83,9 @@ def create_custom_emoji_index(icons_dir: Path, options: dict[str, Any], md: Any)
                 index["alias"][full_name_with_colons] = full_name_with_colons
 
                 # Also add without prefix (e.g., :partyparrot:) unless namespace prefix is required
-                if not _namespace_prefix_required:
+                if not emoji_index_config.namespace_prefix_required:
                     emoji_name_with_colons = f":{emoji_name}:"
-                    _custom_emoji_paths[emoji_name] = rel_path
+                    emoji_index_config.emoji_paths[emoji_name] = rel_path
                     index["emoji"][emoji_name_with_colons] = {
                         "name": emoji_name,
                         "unicode": "e000",  # Private Use Area placeholder
@@ -143,16 +128,16 @@ def custom_emoji_generator(
     emoji_name = shortname.strip(":")
 
     # Check if this is a custom emoji
-    if emoji_name in _custom_emoji_paths:
+    if emoji_name in emoji_index_config.emoji_paths:
         # Custom emoji - return img Element
-        path = _custom_emoji_paths[emoji_name]
+        path = emoji_index_config.emoji_paths[emoji_name]
 
         # Create img element
         el = Element("img")
         el.set("class", "twemoji")
         el.set("alt", alt)
         el.set("title", title)
-        el.set("src", f"{_base_path}{path}")
+        el.set("src", f"{emoji_index_config.base_path}{path}")
 
         return el
 
