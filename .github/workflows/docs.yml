@@ -21,6 +21,8 @@ jobs:
       name: mkdocs-build-tokens
     env:
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+      SLACK_TDISCORD_BOT_TOKENOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
