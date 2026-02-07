@@ -67,15 +67,19 @@ We love cats too: :catjam: :cat-dance: :meow_party:
 
 ## How It Works
 
+<div style="text-align: center;" markdown>
+
 ```mermaid
-graph LR
-    A[mkdocs build] --> B[Load emoji-config.toml]
+graph TD
+    A[mkdocs build] --> B["Load emoji-config.toml"]
     B --> C[Fetch from Provider API]
     C --> D[Download to cache]
-    D --> E[Sync to overrides/assets/emojis]
+    D --> E["Sync to overrides/assets/emojis"]
     E --> F[MkDocs renders docs]
-    F --> G[Emojis available!]
+    F --> G["Emojis available!"]
 ```
+
+</div>
 
 1. **Build Start** - MkDocs plugin activates
 2. **Fetch Emoji List** - Provider API called (cached if fresh)
