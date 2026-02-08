@@ -8,7 +8,7 @@ Sync custom emojis from external providers (Slack, Discord, etc.) into MkDocs Ma
 
 ## Overview
 
-Use your organization's custom Slack or Discord emojis directly in MkDocs documentation with the familiar `:emoji-name:` syntax.
+Use your organization's custom Slack or Discord emojis directly in [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) documentation with the familiar `:emoji-name:` syntax.
 
 :catjam: :cat-dance: :meow_party: :meow-bongo-cat: :typingcat: :shipit: :stonks: :this_is_fine:
 

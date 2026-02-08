@@ -31,6 +31,9 @@ dependencies = [
     "click>=8.1.0",
 ]
 
+[project.urls]
+Homepage = "https://julie-dujardin.github.io/mkdocs-external-custom-emojis/"
+github = "https://github.com/julie-dujardin/mkdocs-external-custom-emojis"
 
 [project.scripts]
 mkdocs-emoji = "mkdocs_external_emojis.cli:main"
