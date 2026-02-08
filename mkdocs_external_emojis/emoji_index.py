@@ -23,7 +23,6 @@ _MD_CONFIG_ATTR = "_external_emoji_config"
 class EmojiIndexConfig:
     """Configuration for the emoji index."""
 
-    base_path: str = "/"
     namespace_prefix_required: bool = False
     emoji_paths: dict[str, str] = field(default_factory=dict)
 
@@ -32,7 +31,6 @@ def create_custom_emoji_index(
     icons_dir: Path,
     options: dict[str, Any],
     md: "Markdown",
-    base_path: str = "/",
     namespace_prefix_required: bool = False,
 ) -> dict[str, Any]:
     """
@@ -42,7 +40,6 @@ def create_custom_emoji_index(
         icons_dir: Path to custom icons directory
         options: Options from pymdownx.emoji
         md: Markdown instance
-        base_path: Base path for emoji URLs
         namespace_prefix_required: Whether namespace prefix is required
 
     Returns:
@@ -53,7 +50,6 @@ def create_custom_emoji_index(
 
     # Create fresh config for this build and store on md instance
     config = EmojiIndexConfig(
-        base_path=base_path,
         namespace_prefix_required=namespace_prefix_required,
     )
     setattr(md, _MD_CONFIG_ATTR, config)
@@ -152,7 +148,7 @@ def custom_emoji_generator(
         el.set("class", "twemoji")
         el.set("alt", title)  # Use title (e.g., :partyparrot:) for accessibility
         el.set("title", title)
-        el.set("src", f"{config.base_path}{path}")
+        el.set("src", f"/{path}")
 
         return el
 

@@ -20,7 +20,6 @@ class TestEmojiIndexConfig:
     def test_default_values(self) -> None:
         """Test default configuration values."""
         config = EmojiIndexConfig()
-        assert config.base_path == "/"
         assert config.namespace_prefix_required is False
         assert config.emoji_paths == {}
 
@@ -32,7 +31,7 @@ class TestCustomEmojiGenerator:
     def md_with_config(self) -> MagicMock:
         """Create a mock Markdown instance with emoji config."""
         md = MagicMock()
-        config = EmojiIndexConfig(base_path="/")
+        config = EmojiIndexConfig()
         setattr(md, _MD_CONFIG_ATTR, config)
         return md
 
@@ -60,27 +59,6 @@ class TestCustomEmojiGenerator:
         assert element.get("src") == "/assets/emojis/slack/partyparrot.gif"
         assert element.get("alt") == ":partyparrot:"
         assert element.get("title") == ":partyparrot:"
-
-    def test_respects_base_path(self) -> None:
-        """Test that base_path is included in src URL."""
-        md = MagicMock()
-        config = EmojiIndexConfig(base_path="/docs/")
-        config.emoji_paths["cat"] = "assets/emojis/test/cat.png"
-        setattr(md, _MD_CONFIG_ATTR, config)
-
-        element = custom_emoji_generator(
-            index="cat",
-            shortname=":cat:",
-            alias=":cat:",
-            uc=None,
-            alt="cat",
-            title=":cat:",
-            category="custom",
-            options={},
-            md=md,
-        )
-
-        assert element.get("src") == "/docs/assets/emojis/test/cat.png"
 
     def test_handles_namespaced_emoji(self, md_with_config: MagicMock) -> None:
         """Test that namespaced emojis work correctly."""
@@ -232,14 +210,14 @@ class TestCreateCustomEmojiIndex:
             assert ":slack-emoji1:" in index["emoji"]
             assert ":discord-emoji2:" in index["emoji"]
 
-    def test_base_path_stored_on_md_instance(self, icons_dir: Path) -> None:
-        """Test that base_path is stored on md instance."""
+    def test_config_stored_on_md_instance(self, icons_dir: Path) -> None:
+        """Test that config is stored on md instance."""
         md = MagicMock()
 
         with patch("mkdocs_external_emojis.emoji_index.twemoji") as mock_twemoji:
             mock_twemoji.return_value = {"emoji": {}, "alias": {}}
 
-            create_custom_emoji_index(icons_dir, {}, md, base_path="/docs/")
+            create_custom_emoji_index(icons_dir, {}, md)
 
             config = getattr(md, _MD_CONFIG_ATTR)
-            assert config.base_path == "/docs/"
+            assert isinstance(config, EmojiIndexConfig)
