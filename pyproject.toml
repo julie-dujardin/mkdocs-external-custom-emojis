@@ -32,7 +32,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://julie-dujardin.github.io/mkdocs-external-custom-emojis/"
+Homepage = "https://mkdocs-emoji.julie.is/"
 github = "https://github.com/julie-dujardin/mkdocs-external-custom-emojis"
 
 [project.scripts]

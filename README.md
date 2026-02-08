@@ -93,12 +93,12 @@ mkdocs-emoji validate  # Check configuration
 
 ## Documentation
 
-📚 **[Full Documentation](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/)**
+📚 **[Full Documentation](https://mkdocs-emoji.julie.is/)**
 
-- [Quick Start Guide](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/quickstart/)
-- [Configuration](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/configuration/)
-- [CLI Commands](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/user-guide/cli/)
-- [Deployment](https://julie-dujardin.github.io/mkdocs-external-custom-emojis/getting-started/deployment/)
+- [Quick Start Guide](https://mkdocs-emoji.julie.is/getting-started/quickstart/)
+- [Configuration](https://mkdocs-emoji.julie.is/getting-started/configuration/)
+- [CLI Commands](https://mkdocs-emoji.julie.is/user-guide/cli/)
+- [Deployment](https://mkdocs-emoji.julie.is/getting-started/deployment/)
 
 ## License
 
