@@ -73,9 +73,6 @@ known-first-party = ["mkdocs_external_emojis"]
 [tool.pytest.ini_options]
 addopts = [
     "--strict-markers",
-    "--cov=mkdocs_external_emojis",
-    "--cov-report=term-missing",
-    "--cov-report=html",
 ]
 
 [dependency-groups]
