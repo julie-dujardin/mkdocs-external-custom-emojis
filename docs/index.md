@@ -1,4 +1,4 @@
-# External Emojis for MkDocs
+# :partyparrot: External Emojis for MkDocs :reverseparrot:
 
 Sync custom emojis from external providers (Slack, Discord, etc.) into MkDocs Material
 
@@ -10,7 +10,7 @@ Sync custom emojis from external providers (Slack, Discord, etc.) into MkDocs Ma
 
 Use your organization's custom Slack or Discord emojis directly in MkDocs documentation with the familiar `:emoji-name:` syntax.
 
-:partyparrot: :catjam: :cat-dance: :meow_party: :meow-bongo-cat: :typingcat: :shipit: :stonks: :this_is_fine:
+:catjam: :cat-dance: :meow_party: :meow-bongo-cat: :typingcat: :shipit: :stonks: :this_is_fine:
 
 ## Installation :rocket_animated:
 
