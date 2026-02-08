@@ -34,7 +34,7 @@ class TestMain:
         """Test --version flag."""
         result = runner.invoke(main, ["--version"])
         assert result.exit_code == 0
-        assert "0.2.1" in result.output
+        assert "0.3.0" in result.output
 
     def test_help(self, runner):
         """Test --help flag."""
