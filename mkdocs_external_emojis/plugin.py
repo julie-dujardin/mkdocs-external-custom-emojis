@@ -2,6 +2,7 @@
 
 import contextlib
 import logging
+import re
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -187,6 +188,24 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
                 )
 
         return files
+
+    def on_page_content(self, html: str, page: Any, config: Any, files: Any) -> str:
+        """Warn about unresolved emoji shortcodes that weren't found in the index."""
+        if not self.config.enabled:
+            return html
+
+        # Strip code blocks, inline code, and all HTML tags to only check text content
+        stripped = re.sub(r"<pre[\s>].*?</pre>", "", html, flags=re.DOTALL)
+        stripped = re.sub(r"<code[\s>].*?</code>", "", stripped, flags=re.DOTALL)
+        stripped = re.sub(r"<[^>]+>", "", stripped)
+
+        for match in re.finditer(r":(?P<name>[\w-]+):", stripped):
+            logger.warning(
+                f"Doc file '{page.file.src_uri}' contains unresolved "
+                f"emoji ':{match.group('name')}:'"
+            )
+
+        return html
 
     def _configure_pymdownx_emoji(self, config: Any, icons_dir: Path) -> None:
         """

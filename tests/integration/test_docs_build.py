@@ -23,8 +23,8 @@ EXPECTED_EMOJIS = [
 
 
 @pytest.fixture(scope="module")
-def built_site(project_root):
-    """Build the mkdocs site and return the site directory path."""
+def build_result(project_root):
+    """Build the mkdocs site and return the result."""
     site_dir = Path(project_root) / "site"
 
     # Clean previous build
@@ -44,7 +44,13 @@ def built_site(project_root):
     assert result.returncode == 0, f"mkdocs build failed:\n{result.stderr}"
     assert site_dir.exists(), "Site directory was not created"
 
-    return site_dir
+    return result
+
+
+@pytest.fixture(scope="module")
+def built_site(build_result, project_root):
+    """Return the site directory path from a successful build."""
+    return Path(project_root) / "site"
 
 
 @pytest.fixture(scope="module")
@@ -146,3 +152,21 @@ class TestEmojiRendering:
             assert alt == title, (
                 f"Emoji alt text should match title for accessibility, got alt='{alt}' title='{title}'"
             )
+
+
+class TestUnresolvedEmojiWarning:
+    """Tests for unresolved emoji detection."""
+
+    def test_warns_on_unresolved_emoji(self, build_result):
+        """Verify build warns about unresolved emoji shortcodes."""
+        assert "contains unresolved emoji ':unresolved-emoji:'" in build_result.stderr
+
+    def test_no_warning_for_resolved_emojis(self, build_result):
+        """Verify no warnings are emitted for emojis that resolved successfully."""
+        for name in ["partyparrot", "shipit", "meow_party", "stonks"]:
+            assert f"unresolved emoji ':{name}:'" not in build_result.stderr
+
+    def test_unresolved_emoji_stays_as_text(self, test_page_html):
+        """Verify unresolved emoji shortcodes remain as plain text in the output."""
+        text = test_page_html.get_text()
+        assert ":unresolved-emoji:" in text
