@@ -2,7 +2,7 @@
 
 Sync custom emojis from external providers (Slack, Discord, etc.) into MkDocs Material
 
-![CI](https://github.com/julie-dujardin/mkdocs-external-custom-emojis/workflows/CI/badge.svg)
+![CI](https://github.com/julie-dujardin/mkdocs-external-custom-emojis/actions/workflows/test.yml/badge.svg?branch=main)
 ![Python Version](https://img.shields.io/pypi/pyversions/mkdocs-external-custom-emojis.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
