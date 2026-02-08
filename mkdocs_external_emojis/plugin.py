@@ -1,13 +1,14 @@
 """MkDocs plugin for external custom emojis."""
 
+import contextlib
 import logging
-import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
-from urllib.parse import urlparse
 
 from mkdocs.config import base, config_options
 from mkdocs.plugins import BasePlugin
+from mkdocs.structure.files import File, Files
+from mkdocs.structure.pages import _AbsoluteLinksValidationValue
 
 from mkdocs_external_emojis.config import ConfigError, load_config, validate_environment
 from mkdocs_external_emojis.constants import DEFAULT_CONFIG_FILE, LOGGER_NAME
@@ -68,6 +69,14 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
 
         # Initialize icons directory
         icons_dir = Path(self.config.icons_dir)
+
+        # Tell MkDocs to resolve absolute links (like /assets/emojis/...) against
+        # the files collection instead of warning about them. This works because
+        # on_files registers all emoji files so MkDocs can find and resolve them.
+        with contextlib.suppress(KeyError, TypeError):
+            config["validation"]["links"]["absolute_links"] = (
+                _AbsoluteLinksValidationValue.RELATIVE_TO_DOCS
+            )
 
         # Configure pymdownx.emoji first (works with cached emojis even if sync fails)
         self._configure_pymdownx_emoji(config, icons_dir)
@@ -152,34 +161,32 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
 
         logger.info("Emoji sync complete")
 
-    def on_post_build(self, config: Any) -> None:
-        """
-        Copy emoji files to site directory after build.
-
-        Args:
-            config: MkDocs configuration
-        """
+    def on_files(self, files: Files, config: Any) -> Files:
+        """Register emoji files with MkDocs so it handles copying and path resolution."""
         if not self.config.enabled:
-            return
+            return files
 
-        # Copy emoji files from overrides/assets/emojis to site/assets/emojis
         icons_dir = Path(self.config.icons_dir)
         if not icons_dir.exists():
-            return
+            return files
 
-        site_dir = Path(config["site_dir"])
-        site_icons_dir = site_dir / "assets" / "emojis"
+        site_dir = config["site_dir"]
+        use_directory_urls = config.get("use_directory_urls", True)
 
-        try:
-            # Copy the entire emojis directory
-            if site_icons_dir.exists():
-                shutil.rmtree(site_icons_dir)
+        for emoji_file in icons_dir.rglob("*"):
+            if emoji_file.is_file() and not emoji_file.name.startswith("."):
+                rel_path = str(emoji_file.relative_to(icons_dir))
+                src_path = f"assets/emojis/{rel_path}"
+                files.append(
+                    File(
+                        src_path,
+                        src_dir=str(icons_dir.parent.parent),
+                        dest_dir=site_dir,
+                        use_directory_urls=use_directory_urls,
+                    )
+                )
 
-            shutil.copytree(icons_dir, site_icons_dir)
-            logger.info(f"Copied emoji files to {site_icons_dir}")
-
-        except Exception as e:
-            logger.warning(f"Failed to copy emoji files: {e}")
+        return files
 
     def _configure_pymdownx_emoji(self, config: Any, icons_dir: Path) -> None:
         """
@@ -219,17 +226,6 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
             )
             return
 
-        # Extract base path from site_url for absolute emoji paths
-        site_url = config.get("site_url", "") or ""
-        if site_url:
-            parsed = urlparse(site_url)
-            base_path = parsed.path
-            # Ensure base_path ends with /
-            if not base_path.endswith("/"):
-                base_path += "/"
-        else:
-            base_path = "/"
-
         # Get namespace prefix requirement from emoji config
         namespace_prefix_required = (
             self.emoji_config.emojis.namespace_prefix_required if self.emoji_config else False
@@ -247,7 +243,7 @@ class ExternalEmojisPlugin(BasePlugin[ExternalEmojisPluginConfig]):
         # Set custom emoji index function (accepts options and md from pymdownx.emoji)
         def emoji_index_wrapper(options: dict[str, Any], md: Any) -> dict[str, Any]:
             return create_custom_emoji_index(
-                icons_dir, options, md, base_path, namespace_prefix_required
+                icons_dir, options, md, namespace_prefix_required=namespace_prefix_required
             )
 
         emoji_config["emoji_index"] = emoji_index_wrapper
